@@ -16,7 +16,7 @@ public class GameTest {
     @BeforeEach
     public void setUp() {
         game = new Game();
-        deck = new Deck(); // For directly testing the deck state
+        deck = new Deck();
     }
 
     @Test
@@ -34,6 +34,7 @@ public class GameTest {
     @Test
     @DisplayName("R1 - Adventure Deck Initialization")
     public void testAdventureDeckInitialized() {
+        //50 weapon cards + 50 foe cards = 100 cards in adventure deck
         List<String> adventureDeck = deck.getAdventureDeck();
         Assertions.assertEquals(100, adventureDeck.size(), "Adventure deck amount isn't correct");
 
@@ -54,8 +55,9 @@ public class GameTest {
     @Test
     @DisplayName("R1 - Event Deck Initialization")
     public void testEventDeckInitialized() {
+        //12 Q cards and 5 E cards = 17 cards in event deck
         List<String> eventDeck = deck.getEventDeck();
-        Assertions.assertEquals(5, eventDeck.size(), "The number of event card is not correct");
+        Assertions.assertEquals(17, eventDeck.size(), "The number of event card is not correct");
 
         long countPlague = eventDeck.stream().filter(card -> card.equals("Plague")).count();
         Assertions.assertEquals(1, countPlague, "There should be 1 plague card in the event deck");
