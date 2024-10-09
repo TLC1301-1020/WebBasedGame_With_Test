@@ -5,8 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class GameTest {
-    GameTest() {
-    }
 
     @Test
     @DisplayName("R1 Test")
