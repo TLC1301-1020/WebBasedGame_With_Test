@@ -85,7 +85,7 @@ public class GameTest {
     public void testDeckUpdatedAfterDistribution(){
         Assertions.assertEquals(100 - 48, game.getDeck().getAdventureDeck().size(), "Deck amount incorrect");
     }
-    
+
     @Test
     @DisplayName("R2 - Player cards sorting")
     public void testSortedHands(){
@@ -94,4 +94,32 @@ public class GameTest {
         List<String> expectedOrder = List.of("F5", "F15", "F20", "H5", "H10", "S10", "B15", "L20");
         Assertions.assertEquals(expectedOrder, sortedHand, "The player's hand should be sorted correctly");
     }
+
+    @Test
+    @DisplayName("R6 - Identify winner(s)")
+    public void testIdentifyWinners() {
+        game.getPlayers().get(0).setShields(8);
+        game.getPlayers().get(1).setShields(7);
+        game.getPlayers().get(2).setShields(10);
+        game.getPlayers().get(3).setShields(3);
+
+        List<Player> winners = game.checkWinners();
+        Assertions.assertEquals(3, winners.size(), "There should be 3 winners.");
+        Assertions.assertFalse(winners.contains(game.getPlayers().get(3)),"Player 4 should not be a winner.");
+        Assertions.assertTrue(winners.contains(game.getPlayers().get(0)), "Player 1 should be a winner.");
+        Assertions.assertTrue(winners.contains(game.getPlayers().get(1)), "Player 2 should be a winner.");
+        Assertions.assertTrue(winners.contains(game.getPlayers().get(2)), "Player 3 should be a winner.");
+    }
+
+    @Test
+    @DisplayName("R6 - Positive value shield")
+    public void testPlayerShield() {
+        Player player = game.getPlayers().get(0);
+        player.setShields(-5);
+        game.checkPlayersShields();
+        Assertions.assertEquals(0, player.getShields(), "Player shields should be reset to 0 if negative.");
+    }
+
+
+
 }
