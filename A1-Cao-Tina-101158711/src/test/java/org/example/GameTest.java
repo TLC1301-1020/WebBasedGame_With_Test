@@ -1,6 +1,5 @@
 package org.example;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,6 +49,7 @@ public class GameTest {
         long countE30 = adventureDeck.stream().filter(card -> card.equals("E30")).count();
         Assertions.assertEquals(2, countE30, "There should be 2 E30 cards in the adventure deck.");
 
+
     }
 
     @Test
@@ -70,4 +70,19 @@ public class GameTest {
 
 
     }
+
+    @Test
+    @DisplayName("R2 - Distribute out adventure cards to players")
+    public void testAdventureCardsDistributed(){
+        for(Player player: game.getPlayers()){
+            Assertions.assertEquals(12, player.getHand().size(),"Each player should receive 12 adventure cards");
+        }
+    }
+
+    @Test
+    @DisplayName("R2 - Deck after distribution")
+    public void testDeckUpdatedAfterDistribution(){
+        Assertions.assertEquals(100 - 48, game.getDeck().getAdventureDeck().size(), "Deck amount incorrect");
+    }
+
 }
