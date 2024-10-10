@@ -11,11 +11,13 @@ public class GameTest {
 
     private Game game;
     private Deck deck;
+    private Player player;
 
     @BeforeEach
     public void setUp() {
         game = new Game();
         deck = new Deck();
+        player = new Player("Test Player");
     }
 
     @Test
@@ -68,7 +70,6 @@ public class GameTest {
         long countProsperity = eventDeck.stream().filter(card -> card.equals("Prosperity")).count();
         Assertions.assertEquals(2, countProsperity, "There should be 2 'Prosperity' cards in the event deck.");
 
-
     }
 
     @Test
@@ -80,9 +81,17 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R2 - Deck after distribution")
+    @DisplayName("R2 - Deck size reduced after distribution")
     public void testDeckUpdatedAfterDistribution(){
         Assertions.assertEquals(100 - 48, game.getDeck().getAdventureDeck().size(), "Deck amount incorrect");
     }
-
+    
+    @Test
+    @DisplayName("R2 - Player cards sorting")
+    public void testSortedHands(){
+        player.addCards(List.of("H10", "F5", "S10", "F15", "B15", "H5", "F20", "L20"));
+        List<String> sortedHand = player.getSortedHand();
+        List<String> expectedOrder = List.of("F5", "F15", "F20", "H5", "H10", "S10", "B15", "L20");
+        Assertions.assertEquals(expectedOrder, sortedHand, "The player's hand should be sorted correctly");
+    }
 }
