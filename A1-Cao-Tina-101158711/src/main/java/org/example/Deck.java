@@ -59,6 +59,7 @@ public class Deck{
         }
     }
 
+
     public void shuffleAdventureDeck(){
         Collections.shuffle(adventureDeck);
     }

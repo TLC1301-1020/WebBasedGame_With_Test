@@ -120,6 +120,4 @@ public class GameTest {
         Assertions.assertEquals(0, player.getShields(), "Player shields should be reset to 0 if negative.");
     }
 
-
-
 }
