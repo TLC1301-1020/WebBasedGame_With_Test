@@ -4,13 +4,12 @@ import org.junit.jupiter.api.Assertions;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
+import org.mockito.Mockito;
 
 import java.util.List;
 
 
 public class GameTest {
-
 
     @Test
     @DisplayName("R1 - Player Initialization")
@@ -150,6 +149,44 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
 
+    @Test
+    @DisplayName("R8 - Player class trim hand")
+    public void testTrimCardFromPlayerClass() {
+        Game game = new Game();
+        Player player = game.getPlayers().get(0);
+        player.getHand().clear();
+
+        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
+        // Check initial hand size
+        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
+
+        // Cards to trim
+        String cardsToTrim = "F5";
+        player.trimHand(cardsToTrim);
+
+        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
+        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
+    }
+
+    @Test
+    @DisplayName("R8 - Game class trim hand")
+    public void testTrimCardFromGameClass() {
+        Game game = new Game();
+        Player player = game.getPlayers().get(0);
+        player.getHand().clear();
+
+        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
+        // Check initial hand size
+        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
+        // Cards to trim
+        String cardsToTrim = "F5";
+        game.TrimCards(player,cardsToTrim);
+        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
+        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
+        //check discarded pile
+        Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
+    }
+
 
 //    @Test
 //    @DisplayName("Print players' hand")
@@ -161,3 +198,4 @@ public class GameTest {
 //    }
 
 }
+
