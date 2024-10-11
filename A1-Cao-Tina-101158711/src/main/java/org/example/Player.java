@@ -20,7 +20,6 @@ public class Player {
         return name;
     }
 
-
     public void addCards(List<String> cards){
         hand.addAll(cards);
         getSortedHand();
@@ -44,7 +43,6 @@ public class Player {
                 }
             }
         });
-
         return hand;
     }
 
@@ -59,4 +57,16 @@ public class Player {
     public int getShields(){
         return shields;
     }
+
+    public Boolean trimHand(String cardToTrim) {
+        if (hand.contains(cardToTrim)) {
+            hand.remove(cardToTrim);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
 }

@@ -7,7 +7,6 @@ public class Game{
     private List<Player> players;
     private Deck deck;
 
-
     public Game(){
         initializeGame();
     }
@@ -19,7 +18,6 @@ public class Game{
         deck.shuffleEventDeck();
         distributeAdventureCards();
     }
-
 
     private  void initializePlayers(){
         players = new ArrayList<>();
@@ -61,5 +59,24 @@ public class Game{
         return winners;
     }
 
+    public void reuseDeck(){
+        if(deck.checkAdventureCard()){
+            deck.addDiscardedAdventureCards();
+        }
+
+        if(deck.checkEventCard()){
+            deck.addDiscardedEventCards();
+        }
+    }
+
+    public boolean TrimCards(Player currentlyPlayer,String card){
+        Boolean trimmed = currentlyPlayer.trimHand(card);
+        if(trimmed){
+            deck.getAdventureDiscardPile().add(card);
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 }

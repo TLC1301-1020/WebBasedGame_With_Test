@@ -150,7 +150,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R8 - Player class trim hand")
+    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
     public void testTrimCardFromPlayerClass() {
         Game game = new Game();
         Player player = game.getPlayers().get(0);
@@ -169,7 +169,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R8 - Game class trim hand")
+    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
     public void testTrimCardFromGameClass() {
         Game game = new Game();
         Player player = game.getPlayers().get(0);
@@ -186,6 +186,9 @@ public class GameTest {
         //check discarded pile
         Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
     }
+
+
+
 
 
 //    @Test

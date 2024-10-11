@@ -7,12 +7,16 @@ import java.util.List;
 public class Deck{
     private List<String> adventureDeck;
     private List<String> eventDeck;
+    private List<String> eventDiscardPile;
+    private List<String> adventureDiscardPile;
 
     public Deck(){
         adventureDeck = new ArrayList<>();
         eventDeck = new ArrayList<>();
         initializeAdventureDeck();
         initializeEventDeck();
+        eventDiscardPile = new ArrayList<>();
+        adventureDiscardPile = new ArrayList<>();
     }
 
     private void initializeAdventureDeck(){
@@ -42,10 +46,10 @@ public class Deck{
         eventDeck.add("Prosperity");
     }
 
-    private void addCards(String pre, int[] values, int[] counts){
+    private void addCards(String prefixes, int[] values, int[] counts){
         for(int i = 0; i < values.length; i++){
             for(int j = 0; j < counts[i]; j++){
-                adventureDeck.add(pre + values[i]);
+                adventureDeck.add(prefixes + values[i]);
             }
         }
     }
@@ -59,6 +63,13 @@ public class Deck{
         }
     }
 
+    public void discardAdventureCard(String card){
+        adventureDiscardPile.add(card);
+    }
+
+    public void discardEventCard(String card){
+        eventDiscardPile.add(card);
+    }
 
     public void shuffleAdventureDeck(){
         Collections.shuffle(adventureDeck);
@@ -68,6 +79,31 @@ public class Deck{
         Collections.shuffle(eventDeck);
     }
 
+    //reuse cards added and shuffled
+    public void addDiscardedAdventureCards(){
+        if(!adventureDiscardPile.isEmpty()){
+            adventureDeck.addAll(adventureDiscardPile);
+            shuffleAdventureDeck();
+            adventureDiscardPile.clear();
+        }
+    }
+    //reuse cards added and shuffled
+    public void addDiscardedEventCards(){
+        if(!eventDiscardPile.isEmpty()){
+            eventDeck.addAll(eventDiscardPile);
+            shuffleEventDeck();
+            eventDiscardPile.clear();
+        }
+    }
+
+    public List<String> getEventDiscardPile(){
+        return eventDiscardPile;
+    }
+
+    public List<String> getAdventureDiscardPile(){
+        return adventureDiscardPile;
+    }
+
     public List<String> getAdventureDeck(){
         return adventureDeck;
     }
@@ -75,4 +111,15 @@ public class Deck{
     public List<String> getEventDeck(){
         return eventDeck;
     }
+
+    //true if empty
+    public boolean checkEventCard(){
+        return eventDeck.isEmpty();
+    }
+
+    //true if empty
+    public boolean checkAdventureCard(){
+        return adventureDeck.isEmpty();
+    }
+
 }
