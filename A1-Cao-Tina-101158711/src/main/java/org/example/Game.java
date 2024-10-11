@@ -41,14 +41,6 @@ public class Game{
         return deck;
     }
 
-    public void checkPlayersShields() {
-        for (Player player : players) {
-            if (player.getShields() < 0) {
-                player.setShields(0);
-            }
-        }
-    }
-
     public List<Player> checkWinners() {
         List<Player> winners = new ArrayList<>();
         for (Player player : players) {

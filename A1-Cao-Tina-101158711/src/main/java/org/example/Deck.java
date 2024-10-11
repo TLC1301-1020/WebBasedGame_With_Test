@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Deck{
         eventDiscardPile = new ArrayList<>();
         adventureDiscardPile = new ArrayList<>();
     }
-
+    //total of 100 cards in A
     private void initializeAdventureDeck(){
         int[] foeValues = {5,10,15,20,25,30,35,40,50,70};
         int[] foeCounts = {8,7,8,7,7,4,4,2,2,1};
@@ -31,12 +32,12 @@ public class Deck{
         addCards(weaponNames,weaponValues,weaponCounts);
     }
 
+    //total of 17 cards in E
     private void initializeEventDeck(){
         int[] questCounts = {3,4,3,2};
         for(int i = 0; i < questCounts.length; i++){
             for(int j = 0; j < questCounts[i]; j++) {
                 eventDeck.add("Q" + (i+2));
-
             }
         }
         eventDeck.add("Plague");
@@ -58,7 +59,6 @@ public class Deck{
         for(int i = 0; i < values.length; i++){
             for(int j = 0; j < counts[i]; j++){
                 adventureDeck.add(prefixes[i] + values[i]);
-
             }
         }
     }
@@ -99,24 +99,19 @@ public class Deck{
     public List<String> getEventDiscardPile(){
         return eventDiscardPile;
     }
-
     public List<String> getAdventureDiscardPile(){
         return adventureDiscardPile;
     }
-
     public List<String> getAdventureDeck(){
         return adventureDeck;
     }
-
     public List<String> getEventDeck(){
         return eventDeck;
     }
-
     //true if empty
     public boolean checkEventCard(){
         return eventDeck.isEmpty();
     }
-
     //true if empty
     public boolean checkAdventureCard(){
         return adventureDeck.isEmpty();

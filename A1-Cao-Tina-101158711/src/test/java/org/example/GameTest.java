@@ -91,10 +91,10 @@ public class GameTest {
     @DisplayName("R6 - Identify winner(s)")
     public void testIdentifyWinners() {
         Game game = new Game();
-        game.getPlayers().get(0).setShields(8);
-        game.getPlayers().get(1).setShields(7);
-        game.getPlayers().get(2).setShields(10);
-        game.getPlayers().get(3).setShields(3);
+        game.getPlayers().get(0).updateShields(30);
+        game.getPlayers().get(1).updateShields(7);
+        game.getPlayers().get(2).updateShields(10);
+        game.getPlayers().get(3).updateShields(3);
 
         List<Player> winners = game.checkWinners();
         Assertions.assertEquals(3, winners.size(), "There should be 3 winners.");
@@ -109,8 +109,9 @@ public class GameTest {
     public void testPlayerShield() {
         Game game = new Game();
         Player player = game.getPlayers().get(0);
-        player.setShields(-5);
-        game.checkPlayersShields();
+        player.updateShields(-20);
+
+        player.getShields();
         Assertions.assertEquals(0, player.getShields(), "Player shields should be reset to 0 if negative.");
     }
 
@@ -186,10 +187,6 @@ public class GameTest {
         //check discarded pile
         Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
     }
-
-
-
-
 
 //    @Test
 //    @DisplayName("Print players' hand")

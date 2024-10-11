@@ -50,8 +50,11 @@ public class Player {
         return hand;
     }
 
-    public void setShields(int shields) {
-        this.shields = shields;
+    public void updateShields(int diff) {
+        shields += diff;
+        if(shields < 0){
+            shields = 0;
+        }
     }
 
     public int getShields(){
@@ -65,7 +68,6 @@ public class Player {
         } else {
             return false;
         }
-
     }
 
 
