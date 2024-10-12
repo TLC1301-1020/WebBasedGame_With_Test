@@ -1,3 +1,4 @@
+
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
@@ -188,6 +189,19 @@ public class GameTest {
         Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
     }
 
+    @Test
+    @DisplayName("R4 - Event card drawn test")
+    public void testDrawEventCard(){
+        Deck deck = new Deck();
+        int initialSize = deck.getEventDiscardPile().size();
+        String card;
+        card = deck.drawEventCard();
+        Assertions.assertNotNull(card);
+
+        //check the discarded pile is updated, size increased by one
+        Assertions.assertEquals(initialSize+1, deck.getEventDiscardPile().size());
+    }
+
 //    @Test
 //    @DisplayName("Print players' hand")
 //    public void testPlayersHand() {
@@ -198,4 +212,6 @@ public class GameTest {
 //    }
 
 }
+
+
 
