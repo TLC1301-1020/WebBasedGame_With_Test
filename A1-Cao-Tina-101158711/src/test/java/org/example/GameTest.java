@@ -202,6 +202,25 @@ public class GameTest {
         Assertions.assertEquals(initialSize+1, deck.getEventDiscardPile().size());
     }
 
+    @Test
+    @DisplayName("R2 - Check player order")
+    public void testUpdateRound(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+
+        menu.updateRound();
+        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
+        menu.updateRound();
+        Assertions.assertEquals("Player2", menu.getCurrentplayer().getName());
+        menu.updateRound();
+        Assertions.assertEquals("Player3", menu.getCurrentplayer().getName());
+        menu.updateRound();
+        Assertions.assertEquals("Player4", menu.getCurrentplayer().getName());
+        //iterate back to player1
+        menu.updateRound();
+        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
+    }
+    
 //    @Test
 //    @DisplayName("Print players' hand")
 //    public void testPlayersHand() {
