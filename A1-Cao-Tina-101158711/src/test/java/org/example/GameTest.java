@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -221,6 +220,27 @@ public class GameTest {
         Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
     }
 
+    @Test
+    @DisplayName("Test counting foe cards in sponsor hand")
+    public void testCountFoeCards(){
+        Game game = new Game();
+        Player p = game.getPlayers().get(0);
+        p.getHand().clear();
+        p.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "C9", "D10", "H11", "H12"));
+        Assertions.assertEquals(8,p.countFoeCards(),"Player should have 8 foe cards in hand");
+    }
+
+    @Test
+    @DisplayName("R7 - Game terminates when there's winner(s)")
+    public void testTerminate(){
+        Game game = new Game();
+        game.getPlayers().get(0).updateShields(20);
+        game.getPlayers().get(3).updateShields(10);
+        Menu menu = new Menu(game);
+        menu.displayMainMenu();
+        Assertions.assertEquals(2,game.checkWinners().size());
+    }
+    
 //    @Test
 //    @DisplayName("Print players' hand")
 //    public void testPlayersHand() {
