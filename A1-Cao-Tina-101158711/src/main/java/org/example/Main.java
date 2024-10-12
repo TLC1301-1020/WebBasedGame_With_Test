@@ -7,6 +7,6 @@ public class Main {
 
         // Initialize the menu with the game instance
         Menu menu = new Menu(game);
-
+        menu.displayMainMenu();
     }
 }

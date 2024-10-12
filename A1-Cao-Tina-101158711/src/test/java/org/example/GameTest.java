@@ -88,6 +88,38 @@ public class GameTest {
     }
 
     @Test
+    @DisplayName("R3 - Check player order")
+    public void testUpdateRound(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+
+        menu.updateRound();
+        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
+        menu.updateRound();
+        Assertions.assertEquals("Player2", menu.getCurrentplayer().getName());
+        menu.updateRound();
+        Assertions.assertEquals("Player3", menu.getCurrentplayer().getName());
+        menu.updateRound();
+        Assertions.assertEquals("Player4", menu.getCurrentplayer().getName());
+        //iterate back to player1
+        menu.updateRound();
+        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
+    }
+
+    @Test
+    @DisplayName("R4 - Event card drawn test")
+    public void testDrawEventCard(){
+        Deck deck = new Deck();
+        int initialSize = deck.getEventDiscardPile().size();
+        String card;
+        card = deck.drawEventCard();
+        Assertions.assertNotNull(card);
+
+        //check the discarded pile is updated, size increased by one
+        Assertions.assertEquals(initialSize+1, deck.getEventDiscardPile().size());
+    }
+
+    @Test
     @DisplayName("R6 - Identify winner(s)")
     public void testIdentifyWinners() {
         Game game = new Game();
@@ -113,6 +145,65 @@ public class GameTest {
 
         player.getShields();
         Assertions.assertEquals(0, player.getShields(), "Player shields should be reset to 0 if negative.");
+    }
+
+    @Test
+    @DisplayName("R7 - Game terminates when there's winner(s)")
+    public void testTerminate(){
+        Game game = new Game();
+        game.getPlayers().get(0).updateShields(20);
+        game.getPlayers().get(3).updateShields(10);
+        Menu menu = new Menu(game);
+        menu.displayMainMenu();
+        Assertions.assertEquals(2,game.checkWinners().size());
+    }
+
+    @Test
+    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
+    public void testTrimCardFromGameClass() {
+        Game game = new Game();
+        Player player = game.getPlayers().get(0);
+        player.getHand().clear();
+
+        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
+        // Check initial hand size
+        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
+        // Cards to trim
+        String cardsToTrim = "F5";
+        game.TrimCards(player,cardsToTrim);
+        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
+        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
+        //check discarded pile
+        Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
+    }
+
+    @Test
+    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
+    public void testTrimCardFromPlayerClass() {
+        Game game = new Game();
+        Player player = game.getPlayers().get(0);
+        player.getHand().clear();
+
+        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
+        // Check initial hand size
+        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
+
+        // Cards to trim
+        String cardsToTrim = "F5";
+        player.trimHand(cardsToTrim);
+
+        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
+        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
+    }
+
+    @Test
+    @DisplayName("Test counting foe cards in sponsor hand")
+    public void testCountFoeCards(){
+        Game game = new Game();
+        Player p = game.getPlayers().get(0);
+        p.getHand().clear();
+        p.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "C9", "D10", "H11", "H12"));
+        Assertions.assertEquals(8,p.countFoeCards(),"Player should have 8 foe cards in hand");
     }
 
     @Test
@@ -150,97 +241,7 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
 
-    @Test
-    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
-    public void testTrimCardFromPlayerClass() {
-        Game game = new Game();
-        Player player = game.getPlayers().get(0);
-        player.getHand().clear();
 
-        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
-        // Check initial hand size
-        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
-
-        // Cards to trim
-        String cardsToTrim = "F5";
-        player.trimHand(cardsToTrim);
-
-        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
-        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
-    }
-
-    @Test
-    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
-    public void testTrimCardFromGameClass() {
-        Game game = new Game();
-        Player player = game.getPlayers().get(0);
-        player.getHand().clear();
-
-        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
-        // Check initial hand size
-        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
-        // Cards to trim
-        String cardsToTrim = "F5";
-        game.TrimCards(player,cardsToTrim);
-        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
-        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
-        //check discarded pile
-        Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
-    }
-
-    @Test
-    @DisplayName("R4 - Event card drawn test")
-    public void testDrawEventCard(){
-        Deck deck = new Deck();
-        int initialSize = deck.getEventDiscardPile().size();
-        String card;
-        card = deck.drawEventCard();
-        Assertions.assertNotNull(card);
-
-        //check the discarded pile is updated, size increased by one
-        Assertions.assertEquals(initialSize+1, deck.getEventDiscardPile().size());
-    }
-
-    @Test
-    @DisplayName("R3 - Check player order")
-    public void testUpdateRound(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-
-        menu.updateRound();
-        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
-        menu.updateRound();
-        Assertions.assertEquals("Player2", menu.getCurrentplayer().getName());
-        menu.updateRound();
-        Assertions.assertEquals("Player3", menu.getCurrentplayer().getName());
-        menu.updateRound();
-        Assertions.assertEquals("Player4", menu.getCurrentplayer().getName());
-        //iterate back to player1
-        menu.updateRound();
-        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
-    }
-
-    @Test
-    @DisplayName("Test counting foe cards in sponsor hand")
-    public void testCountFoeCards(){
-        Game game = new Game();
-        Player p = game.getPlayers().get(0);
-        p.getHand().clear();
-        p.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "C9", "D10", "H11", "H12"));
-        Assertions.assertEquals(8,p.countFoeCards(),"Player should have 8 foe cards in hand");
-    }
-
-    @Test
-    @DisplayName("R7 - Game terminates when there's winner(s)")
-    public void testTerminate(){
-        Game game = new Game();
-        game.getPlayers().get(0).updateShields(20);
-        game.getPlayers().get(3).updateShields(10);
-        Menu menu = new Menu(game);
-        menu.displayMainMenu();
-        Assertions.assertEquals(2,game.checkWinners().size());
-    }
-    
 //    @Test
 //    @DisplayName("Print players' hand")
 //    public void testPlayersHand() {

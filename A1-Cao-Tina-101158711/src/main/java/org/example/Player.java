@@ -70,5 +70,14 @@ public class Player {
         }
     }
 
+    public int countFoeCards(){
+        int count = 0;
+        for(int i = 0; i < hand.size(); i++){
+            if (hand.get(i).contains("F")){
+                count++;
+            }
+        }
+        return count;
+    }
 
 }

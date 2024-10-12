@@ -87,6 +87,7 @@ public class Deck{
             adventureDiscardPile.clear();
         }
     }
+
     //reuse cards added and shuffled
     public void addDiscardedEventCards(){
         if(!eventDiscardPile.isEmpty()){
@@ -96,6 +97,19 @@ public class Deck{
         }
     }
 
+    public String drawAdventureCard(){
+        if(adventureDeck.isEmpty()){
+            addDiscardedAdventureCards();
+        }
+        if(adventureDeck.isEmpty()){
+            throw new IllegalArgumentException("Card not found in hand.");
+        }
+        String drawnCard = adventureDeck.removeFirst();
+        adventureDiscardPile.add(drawnCard);
+        return drawnCard;
+    }
+
+
     public String drawEventCard() {
         if (eventDeck.isEmpty()) {
             addDiscardedEventCards();
@@ -103,13 +117,11 @@ public class Deck{
         if(eventDeck.isEmpty()) {
             throw new IllegalArgumentException("Card not found in hand.");
         }
-
         Random random = new Random();
         int randomIndex = random.nextInt(eventDeck.size());
         String drawnCard = eventDeck.remove(randomIndex);
         eventDiscardPile.add(drawnCard);
         return drawnCard;
-
         }
 
     public List<String> getEventDiscardPile(){

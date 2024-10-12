@@ -1,9 +1,6 @@
 package org.example;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -11,7 +8,6 @@ public class Menu {
     private Scanner scanner;
     private int currentRound;
     private Player currentplayer;
-
     public Menu(Game game) {
         this.game = game;
         this.scanner = new Scanner(System.in);
@@ -19,19 +15,40 @@ public class Menu {
     }
 
     public void displayMainMenu() {
-        while (true) {
+        while (game.checkWinners().isEmpty()) {
             updateRound();
-            System.out.println("Currently " + currentplayer + "'s turn");
-            System.out.println("Hand: " + currentplayer.getHand());
-            String event = game.getDeck().drawEventCard();
-
-            System.out.println("Event card drawn: " + event);
-            if(event.equals("Plague")) {
-                System.out.println("Plague! You loses two shields.");
-                currentplayer.updateShields(-2);
-            }else if(event.equals("Queen's favor")) {
-
+            //check if current player needs to trim hand
+            while(trimNeeded()) {
+                trimHand();
             }
+
+            //game starts
+            newRoundMessage();
+            String event = game.getDeck().drawEventCard();
+            System.out.println("Event card drawn: " + event);
+
+            if(event.equals("Plague")) {
+                plagueCard();
+            }else if(event.equals("Queen's Favor")) {
+                QueensFavor();
+            }else if(event.equals("Prosperity")){
+                Prosperity();
+            }else {
+                //TODO: quest logic
+            }
+
+            System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
+            String input = scanner.nextLine();
+            //return key
+            if (input.isEmpty()){
+                returnKeyClicked();
+            }
+        //while end
+        }
+        //game terminates when at least one winner found
+        System.out.println("Game ended! The winner(s): ");
+        for(int i = 0; i < game.checkWinners().size(); i++){
+            System.out.print(game.checkWinners().get(i).getName() + "\t");
         }
     }
 
@@ -39,36 +56,25 @@ public class Menu {
     public void updateRound() {
         if (currentRound == -1) {
             currentRound = 0;
-        } else {
+        } else if (currentRound == 3) {
+            currentplayer = game.getPlayers().get(currentRound);
+            currentRound = 0;
+        }else {
             currentRound = (currentRound + 1) % 4;
-        }
+            }
         currentplayer = game.getPlayers().get(currentRound);
+
     }
 
-    private void printRoundPlayer(){
-        System.out.println("Current round player: " + currentplayer);
-    }
-
-    //clear when return hit
-    public void returnKeyClicked(){
-        for(int i = 0; i < 50; ++i){
-            System.out.println('\n');
-        }
-    }
-
-
-    public int getCurrentRound() {
-        return currentRound;
-    }
-
-    public Player getCurrentplayer(){
-        return currentplayer;
+    public boolean trimNeeded(){
+        return currentplayer.getHand().size() >= 13;
     }
 
     public void trimHand(){
+        System.out.println(currentplayer.getName());
+        System.out.println("Hand: " + currentplayer.getHand());
         System.out.println("Enter the card to be trimmed: ");
         String trim = scanner.next();
-
         boolean trimmed = game.TrimCards(currentplayer,trim);
         if(trimmed){
             System.out.println("Card trimmed.");
@@ -76,6 +82,35 @@ public class Menu {
             System.out.println("Check your input and retry.");
         }
     }
+
+    //display messages
+    public void plagueCard(){
+
+    }
+    public void QueensFavor(){
+
+    }
+    public void Prosperity(){
+
+    }
+    public void newRoundMessage(){
+        System.out.println("Currently " + currentplayer.getName() + "'s turn");
+        System.out.println("Hand: " + currentplayer.getHand());
+    }
+
+    public Player getCurrentplayer(){
+        return currentplayer;
+    }
+
+    //clear screen
+    public void returnKeyClicked(){
+        for(int i = 0; i < 20; ++i){
+            System.out.println();
+        }
+    }
+
+
+
 
 }
 

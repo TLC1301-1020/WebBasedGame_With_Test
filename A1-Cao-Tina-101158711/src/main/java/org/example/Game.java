@@ -55,7 +55,6 @@ public class Game{
         if(deck.checkAdventureCard()){
             deck.addDiscardedAdventureCards();
         }
-
         if(deck.checkEventCard()){
             deck.addDiscardedEventCards();
         }
