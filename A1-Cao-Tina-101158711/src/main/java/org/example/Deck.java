@@ -96,22 +96,43 @@ public class Deck{
         }
     }
 
+    public String drawEventCard() {
+        if (eventDeck.isEmpty()) {
+            addDiscardedEventCards();
+        }
+        if(eventDeck.isEmpty()) {
+            throw new IllegalArgumentException("Card not found in hand.");
+        }
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(eventDeck.size());
+        String drawnCard = eventDeck.remove(randomIndex);
+        eventDiscardPile.add(drawnCard);
+        return drawnCard;
+
+        }
+
     public List<String> getEventDiscardPile(){
         return eventDiscardPile;
     }
+
     public List<String> getAdventureDiscardPile(){
         return adventureDiscardPile;
     }
+
     public List<String> getAdventureDeck(){
         return adventureDeck;
     }
+
     public List<String> getEventDeck(){
         return eventDeck;
     }
+
     //true if empty
     public boolean checkEventCard(){
         return eventDeck.isEmpty();
     }
+
     //true if empty
     public boolean checkAdventureCard(){
         return adventureDeck.isEmpty();
