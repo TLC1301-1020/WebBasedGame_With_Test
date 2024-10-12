@@ -120,6 +120,33 @@ public class GameTest {
     }
 
     @Test
+    @DisplayName("R5 - Game affected by Plague")
+    public void testPlagueDrawn(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        Player player = game.getPlayers().getFirst();
+
+        player.updateShields(3);
+        menu.setCurrentPlayer(player);
+        menu.plagueCard();
+        Assertions.assertEquals(1,player.getShields(),"Player should have one shield left");
+    }
+    
+    @Test
+    @DisplayName("R5 - Game effected by Queen's Favor cards")
+    public void testQueenFavorDrawn(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        Player player = game.getPlayers().getFirst();
+
+        player.getHand().clear();
+        menu.setCurrentPlayer(player);
+        menu.QueensFavor();
+        Assertions.assertEquals(2,menu.getCurrentplayer().getHand().size(),"There should be 2 cards in hand");
+    }
+
+
+    @Test
     @DisplayName("R6 - Identify winner(s)")
     public void testIdentifyWinners() {
         Game game = new Game();
@@ -240,6 +267,7 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
+
 
 
 //    @Test
