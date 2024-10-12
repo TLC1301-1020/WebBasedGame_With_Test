@@ -131,7 +131,7 @@ public class GameTest {
         menu.plagueCard();
         Assertions.assertEquals(1,player.getShields(),"Player should have one shield left");
     }
-    
+
     @Test
     @DisplayName("R5 - Game effected by Queen's Favor cards")
     public void testQueenFavorDrawn(){
@@ -267,6 +267,7 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
+
 
 
 

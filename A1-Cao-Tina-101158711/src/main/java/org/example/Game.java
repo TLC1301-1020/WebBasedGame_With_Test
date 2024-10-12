@@ -61,6 +61,7 @@ public class Game{
     }
 
     public boolean TrimCards(Player currentlyPlayer,String card){
+        currentlyPlayer.getSortedHand();
         Boolean trimmed = currentlyPlayer.trimHand(card);
         if(trimmed){
             deck.getAdventureDiscardPile().add(card);

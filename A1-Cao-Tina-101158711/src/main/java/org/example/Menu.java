@@ -8,6 +8,7 @@ public class Menu {
     private Scanner scanner;
     private int currentRound;
     private Player currentplayer;
+
     public Menu(Game game) {
         this.game = game;
         this.scanner = new Scanner(System.in);
@@ -85,13 +86,32 @@ public class Menu {
 
     //display messages
     public void plagueCard(){
-
+        System.out.println("Plague! You loses two shields.");
+        currentplayer.updateShields(-2);
     }
     public void QueensFavor(){
-
+        System.out.println("Queen's Favor! Draw two cards.");
+        ArrayList<String> cards = new ArrayList<>();
+        cards.add(game.getDeck().drawAdventureCard());
+        cards.add(game.getDeck().drawAdventureCard());
+        currentplayer.addCards(cards);
+        currentplayer.getSortedHand();
+        while(trimNeeded()) {
+            trimHand();
+        }
     }
     public void Prosperity(){
-
+        System.out.println("Prosperity! Everyone draws two cards.");
+        for(int i = 0; i < game.getPlayers().size(); i++){
+            ArrayList<String> cards = new ArrayList<>();
+            cards.add(game.getDeck().drawAdventureCard());
+            cards.add(game.getDeck().drawAdventureCard());
+            game.getPlayers().get(i).addCards(cards);
+            game.getPlayers().get(i).getSortedHand();
+            while(trimNeeded()) {
+                trimHand();
+            }
+        }
     }
     public void newRoundMessage(){
         System.out.println("Currently " + currentplayer.getName() + "'s turn");
@@ -108,7 +128,9 @@ public class Menu {
             System.out.println();
         }
     }
-
+    public void setCurrentPlayer(Player player){
+        currentplayer = player;
+    }
 
 
 
