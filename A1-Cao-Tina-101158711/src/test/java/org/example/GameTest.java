@@ -203,7 +203,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R2 - Check player order")
+    @DisplayName("R3 - Check player order")
     public void testUpdateRound(){
         Game game = new Game();
         Menu menu = new Menu(game);
@@ -220,7 +220,7 @@ public class GameTest {
         menu.updateRound();
         Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
     }
-    
+
 //    @Test
 //    @DisplayName("Print players' hand")
 //    public void testPlayersHand() {
