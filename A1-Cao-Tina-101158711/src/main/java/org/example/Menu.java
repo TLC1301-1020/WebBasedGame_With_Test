@@ -1,6 +1,6 @@
 package org.example;
+import java.net.CacheRequest;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -8,18 +8,20 @@ public class Menu {
     private Scanner scanner;
     private int currentRound;
     private Player currentplayer;
+    private Player sponsorplayer;
 
     public Menu(Game game) {
         this.game = game;
         this.scanner = new Scanner(System.in);
         currentRound = -1;
+
     }
 
     public void displayMainMenu() {
         while (game.checkWinners().isEmpty()) {
             updateRound();
             //check if current player needs to trim hand
-            while(trimNeeded()) {
+            while (trimNeeded()) {
                 trimHand();
             }
 
@@ -28,27 +30,33 @@ public class Menu {
             String event = game.getDeck().drawEventCard();
             System.out.println("Event card drawn: " + event);
 
-            if(event.equals("Plague")) {
+            if (event.equals("Plague")) {
                 plagueCard();
-            }else if(event.equals("Queen's Favor")) {
+            } else if (event.equals("Queen's Favor")) {
                 QueensFavor();
-            }else if(event.equals("Prosperity")){
+            } else if (event.equals("Prosperity")) {
                 Prosperity();
-            }else {
-                //TODO: quest logic
+            } else {
+                if(!findingSponsor(event)){
+                    System.out.println("No sponsor for the quest, game continues.");
+                }else{
+                    questStarts(event);
+                }
             }
-
             System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
             String input = scanner.nextLine();
             //return key
-            if (input.isEmpty()){
+            if (input.isEmpty()) {
                 returnKeyClicked();
+
+
             }
         //while end
         }
+
         //game terminates when at least one winner found
         System.out.println("Game ended! The winner(s): ");
-        for(int i = 0; i < game.checkWinners().size(); i++){
+        for (int i = 0; i < game.checkWinners().size(); i++) {
             System.out.print(game.checkWinners().get(i).getName() + "\t");
         }
     }
@@ -64,13 +72,15 @@ public class Menu {
             currentRound = (currentRound + 1) % 4;
             }
         currentplayer = game.getPlayers().get(currentRound);
+        sponsorplayer = currentplayer;
 
     }
-
+    public void questStarts(String event){
+        //TODO
+    }
     public boolean trimNeeded(){
         return currentplayer.getHand().size() >= 13;
     }
-
     public void trimHand(){
         System.out.println(currentplayer.getName());
         System.out.println("Hand: " + currentplayer.getHand());
@@ -83,6 +93,7 @@ public class Menu {
             System.out.println("Check your input and retry.");
         }
     }
+
 
     //display messages
     public void plagueCard(){
@@ -113,6 +124,50 @@ public class Menu {
             }
         }
     }
+    public boolean findingSponsor(String event) {
+        int questLevel = Integer.parseInt(event.substring(1));
+        int count = 4; //count down iteration
+        int choice = 0; //user choice
+
+        System.out.println("Quest!");
+
+        while (count != 0) {
+            System.out.println(getSponsorplayer().getName() + ": ");
+            if (!enoughFoeCard(questLevel)) {
+                System.out.println("Sorry! You don't have enough foe cards to build the quest.");
+            } else {
+                System.out.println("Would you be the sponsor for the quest?");
+                System.out.println("1 for yes, 2 for no:");
+                choice = scanner.nextInt();
+            }
+            if (choice == 1) {
+                return true;
+            } else {
+                nextSponsor();
+                count--;
+            }
+        }
+        return false;
+    }
+
+    //check if the player has enough foe cards
+    public boolean enoughFoeCard(int levels){
+        return currentplayer.countFoeCards() >= levels;
+    }
+
+    //iteration for sponsor finding
+    public void nextSponsor(){
+        int index = game.getPlayers().indexOf(sponsorplayer);
+
+        if(index == 3){
+            sponsorplayer = game.getPlayers().getFirst();
+        }else if(index == -1) {
+            sponsorplayer = game.getPlayers().get(1);
+        }else{
+            sponsorplayer = game.getPlayers().get(index+1);
+        }
+    }
+
     public void newRoundMessage(){
         System.out.println("Currently " + currentplayer.getName() + "'s turn");
         System.out.println("Hand: " + currentplayer.getHand());
@@ -122,14 +177,22 @@ public class Menu {
         return currentplayer;
     }
 
+    public Player getSponsorplayer(){
+        return sponsorplayer;
+    }
+
+
     //clear screen
     public void returnKeyClicked(){
         for(int i = 0; i < 20; ++i){
             System.out.println();
         }
     }
+
+    //for testing only
     public void setCurrentPlayer(Player player){
         currentplayer = player;
+        sponsorplayer = currentplayer;
     }
 
 
