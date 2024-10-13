@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -223,15 +224,6 @@ public class GameTest {
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
     }
 
-    @Test
-    @DisplayName("Test counting foe cards in sponsor hand")
-    public void testCountFoeCards(){
-        Game game = new Game();
-        Player p = game.getPlayers().get(0);
-        p.getHand().clear();
-        p.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "C9", "D10", "H11", "H12"));
-        Assertions.assertEquals(8,p.countFoeCards(),"Player should have 8 foe cards in hand");
-    }
 
     @Test
     @DisplayName("Test Discarded adventure cards are stored")
@@ -267,8 +259,42 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
+    @Test
+    @DisplayName("Check if enough foe card by player")
+    public void enoughFoeCard(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        Player player = game.getPlayers().getFirst();
+        player.getHand().clear();
+        player.addCards(List.of("F1","F3"));
+        menu.setCurrentPlayer(player);
+        Assertions.assertFalse(menu.enoughFoeCard(5));
+        Assertions.assertTrue(menu.enoughFoeCard(2));
+    }
 
+    @Test
+    @DisplayName("Get stage and foe card value")
+    public void testStageAndFoeCardValue(){
+        String foeCard = "F5";
+        Stage stage = new Stage(foeCard, List.of("D5","E15","H20","H30"));
+        Assertions.assertEquals(75,stage.getTotalValue());
+        Assertions.assertEquals(5,stage.getCardValue(foeCard));
+    }
 
+    @Test
+    @DisplayName("Check iteration to find a sponsor")
+    public void testIterateSponsor(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        menu.setCurrentPlayer(game.getPlayers().getFirst());
+        menu.nextSponsor();
+        Assertions.assertEquals("Player2", menu.getSponsorplayer().getName());
+
+        menu.setCurrentPlayer(game.getPlayers().getLast());
+        menu.nextSponsor();
+        Assertions.assertEquals("Player1",menu.getSponsorplayer().getName());
+
+    }
 
 
 //    @Test
