@@ -259,6 +259,7 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
+
     @Test
     @DisplayName("Check if enough foe card by player")
     public void enoughFoeCard(){
@@ -282,7 +283,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("Check iteration to find a sponsor")
+    @DisplayName("R10 - Check iteration to find a sponsor")
     public void testIterateSponsor(){
         Game game = new Game();
         Menu menu = new Menu(game);
@@ -296,9 +297,29 @@ public class GameTest {
 
     }
 
+    @Test
+    @DisplayName("R9 - Test finding sponsor loop")
+    public void testFindingSponsor(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+
+        menu.setCurrentPlayer(game.getPlayers().getFirst());
+
+    }
 
 //    @Test
-//    @DisplayName("Print players' hand")
+//    @DisplayName("Test finding participants loop")
+//    public void testFindingParticipants(){
+//        Game game = new Game();
+//        Menu menu = new Menu(game);
+//        List<Player> player;
+//
+//        player = menu.findingParticipants(game.getPlayers().getFirst());
+//        System.out.println(player);
+//    }
+
+//    @Test
+//    @DisplayName("Test print players' hand")
 //    public void testPlayersHand() {
 //        Game g = new Game();
 //        for (int i = 0; i < g.getPlayers().size(); i++) {
