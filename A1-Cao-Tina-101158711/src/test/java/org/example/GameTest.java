@@ -257,8 +257,8 @@ public class GameTest {
         Quest quest = new Quest("Q3",play,List.of(game.getPlayers().get(1),game.getPlayers().get(3)));
 
         quest.initializeStages(1,"F1",List.of("H10","S20"));
-        Assertions.assertEquals("F1",quest.getStage(1).getFoeCard());
-        Assertions.assertEquals(31,quest.getStage(1).getTotalValue());
+        Assertions.assertEquals("F1",quest.getStageIndex(1).getFoeCard());
+        Assertions.assertEquals(31,quest.getStageIndex(1).getTotalValue());
     }
 
     @Test
@@ -316,6 +316,28 @@ public class GameTest {
         Stage stage = new Stage(1,foeCard, List.of("D5","E15","H20","H30"));
         Assertions.assertEquals(75,stage.getTotalValue());
         Assertions.assertEquals(5,stage.getCardValue(foeCard));
+    }
+
+    @Test
+    @DisplayName("R12 - Test the stages should have increasing value")
+    public void testIncreasingStageValues() {
+        // Setup game, sponsor, and quest
+        Game game = new Game();
+        Player sponsor = new Player("Sponsor");
+        sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30"));
+
+        Quest quest = new Quest("Q3", sponsor, null);
+
+        boolean stage1Added = quest.initializeStages(0, "F10", List.of("W10"));
+        Assertions.assertTrue(stage1Added);
+
+        // Valid stage 2 with a higher value than stage 1
+        boolean stage2Added = quest.initializeStages(1, "F20", List.of("W10", "W30"));
+        Assertions.assertTrue(stage2Added);
+        //Stage 3 will not be added
+        boolean stage3Added = quest.initializeStages(2,"F5", List.of("F10"));
+        Assertions.assertFalse(stage3Added);
+
     }
 
 //    @Test
