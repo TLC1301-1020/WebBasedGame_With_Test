@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -224,6 +223,43 @@ public class GameTest {
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
     }
 
+    @Test
+    @DisplayName("R9 - Test finding sponsor loop")
+    public void testFindingSponsor(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        menu.setCurrentPlayer(game.getPlayers().getFirst());
+    }
+
+    @Test
+    @DisplayName("R10 - Check iteration to find a sponsor")
+    public void testIterateSponsor(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        menu.setCurrentPlayer(game.getPlayers().getFirst());
+        menu.nextSponsor();
+        Assertions.assertEquals("Player2", menu.getSponsorplayer().getName());
+
+        menu.setCurrentPlayer(game.getPlayers().getLast());
+        menu.nextSponsor();
+        Assertions.assertEquals("Player1",menu.getSponsorplayer().getName());
+    }
+
+    @Test
+    @DisplayName("R11 - Test Stage initialization")
+    public void testStageInitialization(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        Player play = game.getPlayers().getFirst();
+        menu.setCurrentPlayer(play);
+        play.getHand().clear();
+        play.addCards(List.of("F1","F3","H10","S20"));
+        Quest quest = new Quest("Q3",play,List.of(game.getPlayers().get(1),game.getPlayers().get(3)));
+
+        quest.initializeStages(1,"F1",List.of("H10","S20"));
+        Assertions.assertEquals("F1",quest.getStage(1).getFoeCard());
+        Assertions.assertEquals(31,quest.getStage(1).getTotalValue());
+    }
 
     @Test
     @DisplayName("Test Discarded adventure cards are stored")
@@ -277,45 +313,22 @@ public class GameTest {
     @DisplayName("Get stage and foe card value")
     public void testStageAndFoeCardValue(){
         String foeCard = "F5";
-        Stage stage = new Stage(foeCard, List.of("D5","E15","H20","H30"));
+        Stage stage = new Stage(1,foeCard, List.of("D5","E15","H20","H30"));
         Assertions.assertEquals(75,stage.getTotalValue());
         Assertions.assertEquals(5,stage.getCardValue(foeCard));
     }
 
-    @Test
-    @DisplayName("R10 - Check iteration to find a sponsor")
-    public void testIterateSponsor(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        menu.setCurrentPlayer(game.getPlayers().getFirst());
-        menu.nextSponsor();
-        Assertions.assertEquals("Player2", menu.getSponsorplayer().getName());
-
-        menu.setCurrentPlayer(game.getPlayers().getLast());
-        menu.nextSponsor();
-        Assertions.assertEquals("Player1",menu.getSponsorplayer().getName());
-
-    }
-
-    @Test
-    @DisplayName("R9 - Test finding sponsor loop")
-    public void testFindingSponsor(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-
-        menu.setCurrentPlayer(game.getPlayers().getFirst());
-
-    }
-
 //    @Test
-//    @DisplayName("Test finding participants loop")
-//    public void testFindingParticipants(){
+//    @DisplayName("Test to add foe card")
+//    public void testBuildFoeCard(){
 //        Game game = new Game();
 //        Menu menu = new Menu(game);
-//        List<Player> player;
-//
-//        player = menu.findingParticipants(game.getPlayers().getFirst());
-//        System.out.println(player);
+//        Player player = game.getPlayers().getFirst();
+//        player.getHand().clear();
+//        player.addCards(List.of("F1","E3","C5"));
+//        menu.setCurrentPlayer(player);
+//        System.out.println(menu.getCurrentplayer().getName() + "," + menu.getSponsorplayer().getName());
+//        menu.startQuest("Q5",player,List.of(game.getPlayers().get(0),game.getPlayers().get(2)));
 //    }
 
 //    @Test
