@@ -118,7 +118,7 @@ public class Menu {
 
     public int adjustStage(int currentLevel){
         System.out.println("Current stage has to have a greater value than the previous stage");
-        Stage stage = quest.getStage(currentLevel);
+        Stage stage = quest.getStageIndex(currentLevel);
 
         //add the stage cards back to sponsor hand
         sponsorplayer.addCards(stage.getWeaponCards());

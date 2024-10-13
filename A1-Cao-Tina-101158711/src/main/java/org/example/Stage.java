@@ -46,6 +46,9 @@ public class Stage {
     public String getFoeCard(){
         return foeCard;
     }
+    public int getStageLevel(){
+        return stageLevel+1;
+    }
 }
 
 
