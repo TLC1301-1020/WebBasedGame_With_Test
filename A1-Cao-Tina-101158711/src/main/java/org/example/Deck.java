@@ -140,6 +140,12 @@ public class Deck{
         return eventDeck;
     }
 
+    public boolean removeAdventureCardFromDiscarded(String card){
+        if(eventDiscardPile.remove(card)){
+            return true;
+        }
+        return false;
+    }
     //true if empty
     public boolean checkEventCard(){
         return eventDeck.isEmpty();

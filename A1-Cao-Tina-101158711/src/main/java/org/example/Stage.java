@@ -7,9 +7,10 @@ public class Stage {
     private String foeCard;
     private List<String> weaponCards;
     private int totalValue;
+    private int stageLevel;
 
-
-    public Stage(String foeCard, List<String> weaponCards) {
+    public Stage(int stageLevel,String foeCard, List<String> weaponCards) {
+        this.stageLevel = stageLevel;
         this.foeCard = foeCard;
         this.weaponCards = weaponCards;
         this.totalValue = addSponsorTotal(foeCard,weaponCards);
@@ -33,8 +34,17 @@ public class Stage {
     public int getCardValue(String card) {
         return Integer.parseInt(card.substring(1));
     }
+
     public int getTotalValue(){
         return totalValue;
+    }
+
+    public List<String> getWeaponCards(){
+        return weaponCards;
+    }
+
+    public String getFoeCard(){
+        return foeCard;
     }
 }
 
