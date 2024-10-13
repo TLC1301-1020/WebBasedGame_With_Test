@@ -1,6 +1,7 @@
 package org.example;
-import java.net.CacheRequest;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -9,7 +10,7 @@ public class Menu {
     private int currentRound;
     private Player currentplayer;
     private Player sponsorplayer;
-
+    private List<Player> participants;
     public Menu(Game game) {
         this.game = game;
         this.scanner = new Scanner(System.in);
@@ -40,7 +41,10 @@ public class Menu {
                 if(!findingSponsor(event)){
                     System.out.println("No sponsor for the quest, game continues.");
                 }else{
-                    questStarts(event);
+                    findParticipants();
+                }
+                if(!participants.isEmpty()){
+                    startQuest();
                 }
             }
             System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
@@ -48,8 +52,6 @@ public class Menu {
             //return key
             if (input.isEmpty()) {
                 returnKeyClicked();
-
-
             }
         //while end
         }
@@ -59,6 +61,9 @@ public class Menu {
         for (int i = 0; i < game.checkWinners().size(); i++) {
             System.out.print(game.checkWinners().get(i).getName() + "\t");
         }
+    }
+    public void startQuest(){
+        //TODO
     }
 
     //update round player in order
@@ -75,9 +80,7 @@ public class Menu {
         sponsorplayer = currentplayer;
 
     }
-    public void questStarts(String event){
-        //TODO
-    }
+
     public boolean trimNeeded(){
         return currentplayer.getHand().size() >= 13;
     }
@@ -150,6 +153,32 @@ public class Menu {
         return false;
     }
 
+    public List<Player> findParticipants(){
+        //for clear the array from previous
+        participants.clear();
+        int index;
+        if(currentRound == -1){
+            index = 0;
+        }else {
+            index = currentRound;
+        }
+        Player current;
+        //loop to ask every player (other than sponsor) to participate
+        for(int i = 0; i < 3; i++){
+            index++;
+            current = game.getPlayers().get(index);
+            System.out.println(current.getName() + ":");
+            System.out.println("Would you like to participate in the quest?");
+            System.out.println("1 for yes, 2 for no");
+//            int choice = scanner.nextInt();
+            int choice = 2;
+            if(choice == 1) {
+                participants.add(current);
+            }
+        }
+        return participants;
+
+    }
     //check if the player has enough foe cards
     public boolean enoughFoeCard(int levels){
         return currentplayer.countFoeCards() >= levels;
@@ -181,7 +210,6 @@ public class Menu {
         return sponsorplayer;
     }
 
-
     //clear screen
     public void returnKeyClicked(){
         for(int i = 0; i < 20; ++i){
@@ -189,7 +217,7 @@ public class Menu {
         }
     }
 
-    //for testing only
+    //for testing
     public void setCurrentPlayer(Player player){
         currentplayer = player;
         sponsorplayer = currentplayer;
