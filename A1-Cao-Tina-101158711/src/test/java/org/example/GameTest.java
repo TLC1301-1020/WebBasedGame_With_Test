@@ -333,17 +333,28 @@ public class GameTest {
 
         menu.setScanner(scanner);
         when(scanner.nextInt())
-                .thenReturn(1)
-                .thenReturn(1)
-                .thenReturn(2);
-
+                .thenReturn(1)  //participant
+                .thenReturn(1)  //participant
+                .thenReturn(2); //rejected
         List<Player> participants = menu.findParticipants();
 
         Assertions.assertEquals(2, participants.size());
-        Assertions.assertEquals("Player2", participants.get(0).getName());
-        Assertions.assertEquals("Player3", participants.get(1).getName());
+        for(int i = 0; i < participants.size(); i++){
+            System.out.println(participants.get(i).getName());
+        }
+        Assertions.assertEquals("Player1", participants.get(0).getName());
+        Assertions.assertEquals("Player2", participants.get(1).getName());
     }
 
+    @Test
+    @DisplayName("R15 - test calculate participant value and pass/fail")
+    public void testParticipantValue(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        int participantValue = 15;
+        int stageValue = 10;
+        Assertions.assertTrue(menu.participantPassed(participantValue,stageValue),"participant value is greater than the stage value");
+    }
 
     @Test
     @DisplayName("R16 - test participant card discarding")
