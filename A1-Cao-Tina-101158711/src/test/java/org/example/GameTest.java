@@ -3,6 +3,8 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
@@ -344,6 +346,53 @@ public class GameTest {
         }
         Assertions.assertEquals("Player1", participants.get(0).getName());
         Assertions.assertEquals("Player2", participants.get(1).getName());
+    }
+
+    @Test
+    @DisplayName("R14 - test only one foe card being used at each stage")
+    void testOnlyFoeCard() {
+        Game game = mock(Game.class);
+        Deck deck = mock(Deck.class);
+        when(game.getDeck()).thenReturn(deck);
+
+        Player sponsorPlayer = mock(Player.class);
+        List<String> sponsorHand = new ArrayList<>(Arrays.asList("F1", "F2", "W1", "W2"));
+        when(sponsorPlayer.getHand()).thenReturn(sponsorHand);
+
+        // Set up menu and assign sponsor
+        Menu menu = new Menu(game);
+        menu.setCurrentPlayer(sponsorPlayer);
+        menu.setScanner(new Scanner("F1\nF2\nquit\n"));
+
+        String foeCard = menu.buildFoeCard(1);
+
+        Assertions.assertEquals("F1", foeCard);
+        verify(deck).discardEventCard("F1");
+
+    }
+
+    @Test
+    @DisplayName("R14 - test non-repeated type weapon card can be used to build")
+    public void testInvalidWeaponCardEntry() {
+        Game game = mock(Game.class);
+        Deck deck = mock(Deck.class);
+        when(game.getDeck()).thenReturn(deck);
+
+        Player sponsorPlayer = mock(Player.class);
+        List<String> sponsorHand = new ArrayList<>(Arrays.asList("W1", "S2", "W3", "F1"));
+        when(sponsorPlayer.getHand()).thenReturn(sponsorHand);
+
+        Menu menu = new Menu(game);
+        menu.setCurrentPlayer(sponsorPlayer);
+        menu.setScanner(new Scanner("W1\nS2\nW3\nquit\n"));
+
+        List<String> weaponCards = menu.buildWeaponCards(1);
+
+        Assertions.assertEquals(2, weaponCards.size());
+        Assertions.assertTrue(weaponCards.contains("W1"));
+        Assertions.assertFalse(weaponCards.contains("W2"));
+        Assertions.assertTrue(weaponCards.contains("S2"));
+
     }
 
     @Test
