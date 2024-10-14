@@ -135,6 +135,7 @@ public class Menu {
         currentParticipant.getHand().add(game.getDeck().drawAdventureCard());
         currentParticipant.getSortedHand();
     }
+
     public void loopDrawAdventureCard(){
         System.out.println("Each participant draws a card");
         //add cards to each participant's hand
@@ -186,12 +187,10 @@ public class Menu {
     public void startQuest(String event,Player sponsorplayer, List<Player> participants){
         quest = new Quest(event,sponsorplayer,participants);
         int count = 1;
-        //get foe card
         while (count <= Integer.parseInt(event.substring(1))) {
             String stageFoe = buildFoeCard(count);
             List<String> weaponCards = buildWeaponCards(count);
             boolean added = quest.initializeStages(count - 1, stageFoe, weaponCards);
-
             if (!added) {
                 System.out.println("Retry. Current stage has to have a greater value than previous stage");
                 sponsorplayer.getHand().add(stageFoe);
@@ -366,6 +365,12 @@ public class Menu {
     public void setScanner(Scanner scanner){
         this.scanner = scanner;
     }
+    public List<Player> getParticipants(){
+        return participants;
+    }
 
+    public Quest getQuest(){
+        return quest;
+    }
 }
 

@@ -31,16 +31,6 @@ public class Stage {
         return totalValue;
     }
 
-    //getters
-    //index of the stage in the stages
-    public int getIndex(){
-        return index;
-    }
-
-    //stage level in the quest
-    public int getLevel(){
-        return stageLevel;
-    }
 
     public int getCardValue(String card) {
         return Integer.parseInt(card.substring(1));

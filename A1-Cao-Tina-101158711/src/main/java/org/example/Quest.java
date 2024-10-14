@@ -32,9 +32,6 @@ public class Quest {
         return true;
     }
 
-    public Stage getIndexOfStageAtLevel(int level){
-        return stages.get(level-1);
-    }
 
     public Stage getStageAtLevel(int level){
         return stages.get(level-1);
