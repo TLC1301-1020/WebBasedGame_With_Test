@@ -2,11 +2,13 @@
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
-
+import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import static org.mockito.Mockito.*;
 
 
 public class GameTest {
@@ -194,11 +196,12 @@ public class GameTest {
 
         player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
         // Check initial hand size
-        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
+        Assertions.assertEquals(13, player.getHand().size(), "Player should have 13 cards initially.");
         // Cards to trim
         String cardsToTrim = "F5";
         game.TrimCards(player,cardsToTrim);
-        Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
+
+        Assertions.assertEquals(12, player.getHand().size(), "Player should have 12 cards after trimming.");
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
         //check discarded pile
         Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
@@ -208,12 +211,12 @@ public class GameTest {
     @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
     public void testTrimCardFromPlayerClass() {
         Game game = new Game();
-        Player player = game.getPlayers().get(0);
+        Player player = game.getPlayers().getFirst();
         player.getHand().clear();
 
         player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
         // Check initial hand size
-        Assertions.assertEquals(13, player.getHand().size(), "Player should have 15 cards initially.");
+        Assertions.assertEquals(13, player.getHand().size(), "Player should have 13 cards initially.");
 
         // Cards to trim
         String cardsToTrim = "F5";
@@ -221,6 +224,18 @@ public class GameTest {
 
         Assertions.assertEquals(12, player.getHand().size(), "Player should have 13 cards after trimming.");
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
+    }
+
+    @Test
+    @DisplayName("R8 - Test detect trim needed")
+    public void testDetectTrimming(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        Player p = game.getPlayers().getFirst();
+        System.out.println("Current player hand " + p.getHand());
+        p.getHand().add("H3");
+        menu.setCurrentPlayer(p);
+        System.out.println(menu.trimNeeded());
     }
 
     @Test
@@ -256,9 +271,9 @@ public class GameTest {
         play.addCards(List.of("F1","F3","H10","S20"));
         Quest quest = new Quest("Q3",play,List.of(game.getPlayers().get(1),game.getPlayers().get(3)));
 
-        quest.initializeStages(1,"F1",List.of("H10","S20"));
-        Assertions.assertEquals("F1",quest.getStageIndex(1).getFoeCard());
-        Assertions.assertEquals(31,quest.getStageIndex(1).getTotalValue());
+        quest.initializeStages(0,"F1",List.of("H10","S20"));
+        Assertions.assertEquals("F1",quest.getStageAtLevel(1).getFoeCard());
+        Assertions.assertEquals(31,quest.getStageAtLevel(1).getTotalValue());
     }
 
     @Test
@@ -339,6 +354,43 @@ public class GameTest {
         Assertions.assertFalse(stage3Added);
 
     }
+    @Test
+    void testCardDiscardingAndInputValidation() {
+                // Mock Game and Deck
+                Game mockGame = mock(Game.class);
+                Deck mockDeck = mock(Deck.class);
+                when(mockGame.getDeck()).thenReturn(mockDeck);
+
+                // Create a player and initialize their hand directly
+                Player player = new Player("TestPlayer");
+                // Initialize the player's hand directly
+                List<String> hand = new ArrayList<>();
+                hand.add("S3");  // A valid card
+                hand.add("F5");  // A foe card
+                player.getHand().addAll(hand); // Assuming getHand() returns a mutable list
+
+                // Initialize Menu and set the current player
+                Menu menu = new Menu(mockGame);
+                menu.setCurrentPlayer(player);
+
+                // Simulate valid and invalid inputs for participantBuilds
+                // Input: Invalid F5, Invalid S4, Valid S3, then quit
+                Scanner inputScanner = new Scanner("F5 S4 S3 quit\n");
+                menu.setScanner(inputScanner);
+
+                // Call participantBuilds method
+                int totalPlayed = menu.participantBuilds(0, player);
+
+                // Verify that only the valid card "S3" is discarded
+                verify(mockDeck, times(1)).discardAdventureCard("S3");
+
+                // Check that the invalid cards were not discarded
+                Assertions.assertTrue(player.getHand().contains("F5"));
+                Assertions.assertFalse(player.getHand().contains("S4")); // Ensure S4 was never added
+                Assertions.assertEquals(3, totalPlayed); // Check the total played value
+            }
+
+
 
 //    @Test
 //    @DisplayName("Test to add foe card")
