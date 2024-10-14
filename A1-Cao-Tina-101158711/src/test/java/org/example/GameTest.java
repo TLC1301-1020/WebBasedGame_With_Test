@@ -2,6 +2,7 @@
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
+
 import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -354,43 +355,50 @@ public class GameTest {
         Assertions.assertFalse(stage3Added);
 
     }
+
     @Test
+    @DisplayName("R13 - Identifies quest participants")
+    void testFindParticipants() {
+        Scanner scanner = mock(Scanner.class);
+        Game game = new Game();
+        Menu menu = new Menu(game);
+
+        menu.setScanner(scanner);
+        when(scanner.nextInt())
+                .thenReturn(1)
+                .thenReturn(1)
+                .thenReturn(2);
+
+        List<Player> participants = menu.findParticipants();
+
+        Assertions.assertEquals(2, participants.size());
+        Assertions.assertEquals("Player2", participants.get(0).getName());
+        Assertions.assertEquals("Player3", participants.get(1).getName());
+    }
+    
+    @DisplayName("R16 - test participant card discarding")
     void testCardDiscardingAndInputValidation() {
-                // Mock Game and Deck
-                Game mockGame = mock(Game.class);
-                Deck mockDeck = mock(Deck.class);
-                when(mockGame.getDeck()).thenReturn(mockDeck);
+        Game mockGame = mock(Game.class);
+        Deck mockDeck = mock(Deck.class);
+        when(mockGame.getDeck()).thenReturn(mockDeck);
 
-                // Create a player and initialize their hand directly
-                Player player = new Player("TestPlayer");
-                // Initialize the player's hand directly
-                List<String> hand = new ArrayList<>();
-                hand.add("S3");  // A valid card
-                hand.add("F5");  // A foe card
-                player.getHand().addAll(hand); // Assuming getHand() returns a mutable list
+        Player player = new Player("TestPlayer");
+        List<String> hand = new ArrayList<>();
+        hand.add("S3");
+        hand.add("F5");
+        player.getHand().addAll(hand);
 
-                // Initialize Menu and set the current player
-                Menu menu = new Menu(mockGame);
-                menu.setCurrentPlayer(player);
+        Menu menu = new Menu(mockGame);
+        menu.setCurrentPlayer(player);
 
-                // Simulate valid and invalid inputs for participantBuilds
-                // Input: Invalid F5, Invalid S4, Valid S3, then quit
-                Scanner inputScanner = new Scanner("F5 S4 S3 quit\n");
-                menu.setScanner(inputScanner);
-
-                // Call participantBuilds method
-                int totalPlayed = menu.participantBuilds(0, player);
-
-                // Verify that only the valid card "S3" is discarded
-                verify(mockDeck, times(1)).discardAdventureCard("S3");
-
-                // Check that the invalid cards were not discarded
-                Assertions.assertTrue(player.getHand().contains("F5"));
-                Assertions.assertFalse(player.getHand().contains("S4")); // Ensure S4 was never added
-                Assertions.assertEquals(3, totalPlayed); // Check the total played value
-            }
-
-
+        Scanner inputScanner = new Scanner("F5 S4 S3 quit\n");
+        menu.setScanner(inputScanner);
+        int totalPlayed = menu.participantBuilds(0, player);
+        verify(mockDeck, times(1)).discardAdventureCard("S3");
+        Assertions.assertTrue(player.getHand().contains("F5"));
+        Assertions.assertFalse(player.getHand().contains("S4"));
+        Assertions.assertEquals(3, totalPlayed);
+    }
 
 //    @Test
 //    @DisplayName("Test to add foe card")
