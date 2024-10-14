@@ -3,9 +3,11 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -278,6 +280,96 @@ public class GameTest {
     }
 
     @Test
+    @DisplayName("R12 - Test the stages should have increasing value")
+    public void testIncreasingStageValues() {
+        // Setup game, sponsor, and quest
+        Game game = new Game();
+        Player sponsor = new Player("Sponsor");
+        sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30"));
+
+        Quest quest = new Quest("Q3", sponsor, null);
+
+        boolean stage1Added = quest.initializeStages(0, "F10", List.of("W10"));
+        Assertions.assertTrue(stage1Added);
+
+        // Valid stage 2 with a higher value than stage 1
+        boolean stage2Added = quest.initializeStages(1, "F20", List.of("W10", "W30"));
+        Assertions.assertTrue(stage2Added);
+        //Stage 3 will not be added
+        boolean stage3Added = quest.initializeStages(2,"F5", List.of("F10"));
+        Assertions.assertFalse(stage3Added);
+
+    }
+
+
+    @Test
+    @DisplayName("R12 - Test stages are in increasing order")
+    void testStagesHaveIncreasingValues() {
+
+        Player sponsor = mock(Player.class);
+        Player participant1 = mock(Player.class);
+        Player participant2 = mock(Player.class);
+        List<Player> participants = Arrays.asList(participant1, participant2);
+
+        when(sponsor.getHand()).thenReturn(Arrays.asList("F3", "W4", "W5"));
+
+        Quest quest = new Quest("Q3", sponsor, participants);
+
+        boolean stage1Valid = quest.initializeStages(0, "F2", Arrays.asList("W5"));
+        boolean stage2Invalid = quest.initializeStages(1, "F3", Arrays.asList("W4"));
+        boolean stage2Valid = quest.initializeStages(1, "F3", Arrays.asList("W5"));
+
+        Assertions.assertTrue(stage1Valid, "Stage 1 should be valid");
+        Assertions.assertFalse(stage2Invalid, "Stage 2 should be rejected for having the same or lower value");
+        Assertions.assertTrue(stage2Valid, "Stage 2 should be accepted for having a strictly greater value than Stage 1");
+    }
+
+    @Test
+    @DisplayName("R13 - Identifies quest participants")
+    void testFindParticipants() {
+        Scanner scanner = mock(Scanner.class);
+        Game game = new Game();
+        Menu menu = new Menu(game);
+
+        menu.setScanner(scanner);
+        when(scanner.nextInt())
+                .thenReturn(1)
+                .thenReturn(1)
+                .thenReturn(2);
+
+        List<Player> participants = menu.findParticipants();
+
+        Assertions.assertEquals(2, participants.size());
+        Assertions.assertEquals("Player2", participants.get(0).getName());
+        Assertions.assertEquals("Player3", participants.get(1).getName());
+    }
+
+
+    @Test
+    @DisplayName("R16 - test participant card discarding")
+    void testCardDiscardingAndInputValidation() {
+        Game mockGame = mock(Game.class);
+        Deck mockDeck = mock(Deck.class);
+        when(mockGame.getDeck()).thenReturn(mockDeck);
+
+        Player player = new Player("TestPlayer");
+        List<String> hand = new ArrayList<>();
+        hand.add("S3");
+        hand.add("F5");
+        player.getHand().addAll(hand);
+
+        Menu menu = new Menu(mockGame);
+        menu.setCurrentPlayer(player);
+
+        Scanner inputScanner = new Scanner("F5 S4 S3 quit\n");
+        menu.setScanner(inputScanner);
+        int totalPlayed = menu.participantBuilds(0, player);
+        verify(mockDeck, times(1)).discardAdventureCard("S3");
+        Assertions.assertTrue(player.getHand().contains("F5"));
+        Assertions.assertFalse(player.getHand().contains("S4"));
+        Assertions.assertEquals(3, totalPlayed);
+    }
+    @Test
     @DisplayName("Test Discarded adventure cards are stored")
     public void testDiscardAdventureCard() {
         String card = "F10";
@@ -334,71 +426,6 @@ public class GameTest {
         Assertions.assertEquals(5,stage.getCardValue(foeCard));
     }
 
-    @Test
-    @DisplayName("R12 - Test the stages should have increasing value")
-    public void testIncreasingStageValues() {
-        // Setup game, sponsor, and quest
-        Game game = new Game();
-        Player sponsor = new Player("Sponsor");
-        sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30"));
-
-        Quest quest = new Quest("Q3", sponsor, null);
-
-        boolean stage1Added = quest.initializeStages(0, "F10", List.of("W10"));
-        Assertions.assertTrue(stage1Added);
-
-        // Valid stage 2 with a higher value than stage 1
-        boolean stage2Added = quest.initializeStages(1, "F20", List.of("W10", "W30"));
-        Assertions.assertTrue(stage2Added);
-        //Stage 3 will not be added
-        boolean stage3Added = quest.initializeStages(2,"F5", List.of("F10"));
-        Assertions.assertFalse(stage3Added);
-
-    }
-
-    @Test
-    @DisplayName("R13 - Identifies quest participants")
-    void testFindParticipants() {
-        Scanner scanner = mock(Scanner.class);
-        Game game = new Game();
-        Menu menu = new Menu(game);
-
-        menu.setScanner(scanner);
-        when(scanner.nextInt())
-                .thenReturn(1)
-                .thenReturn(1)
-                .thenReturn(2);
-
-        List<Player> participants = menu.findParticipants();
-
-        Assertions.assertEquals(2, participants.size());
-        Assertions.assertEquals("Player2", participants.get(0).getName());
-        Assertions.assertEquals("Player3", participants.get(1).getName());
-    }
-    
-    @DisplayName("R16 - test participant card discarding")
-    void testCardDiscardingAndInputValidation() {
-        Game mockGame = mock(Game.class);
-        Deck mockDeck = mock(Deck.class);
-        when(mockGame.getDeck()).thenReturn(mockDeck);
-
-        Player player = new Player("TestPlayer");
-        List<String> hand = new ArrayList<>();
-        hand.add("S3");
-        hand.add("F5");
-        player.getHand().addAll(hand);
-
-        Menu menu = new Menu(mockGame);
-        menu.setCurrentPlayer(player);
-
-        Scanner inputScanner = new Scanner("F5 S4 S3 quit\n");
-        menu.setScanner(inputScanner);
-        int totalPlayed = menu.participantBuilds(0, player);
-        verify(mockDeck, times(1)).discardAdventureCard("S3");
-        Assertions.assertTrue(player.getHand().contains("F5"));
-        Assertions.assertFalse(player.getHand().contains("S4"));
-        Assertions.assertEquals(3, totalPlayed);
-    }
 
 //    @Test
 //    @DisplayName("Test to add foe card")
