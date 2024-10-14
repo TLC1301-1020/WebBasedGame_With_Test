@@ -32,7 +32,9 @@ public class Quest {
         return true;
     }
 
-
+    public int getTotalLevel(){
+        return totalLevel;
+    }
     public Stage getStageAtLevel(int level){
         return stages.get(level-1);
     }

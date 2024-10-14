@@ -13,13 +13,14 @@ public class Menu {
     private Player sponsorplayer;
     private List<Player> participants;
     private Quest quest;
+    private int cardsUsed;
 
     public Menu(Game game) {
         this.participants = new ArrayList<>();
         this.game = game;
         this.scanner = new Scanner(System.in);
         currentRound = -1;
-
+        cardsUsed = 0;
     }
 
     public void displayMainMenu() {
@@ -27,7 +28,7 @@ public class Menu {
             updateRound();
             //check if current player needs to trim hand
             while (trimNeeded()) {
-                trimHand();
+                trimHand(currentplayer);
             }
 
             //game starts
@@ -47,22 +48,39 @@ public class Menu {
                 }else{
                     findParticipants();
                 }
-
+                //there's participant(s)
                 if(!participants.isEmpty()){
-                    //create the stages
+                    //quest play
                     startQuest(event,sponsorplayer, participants);
-                    stageFight();
+                    if(stageFight()){
+                        //update shields
+                        for(int i = 0; i < participants.size(); i++){
+                            participants.get(i).updateShields(+2);
+                        }
+                    }else{
+                        System.out.println("Quest failed!");
+                    }
                 }
             }
+
             game.getDeck().discardEventCard(event);
+            if (!game.checkWinners().isEmpty()) {
+                break;
+            }
+            //sponsor update cards
+            for(int i = 0; i < cardsUsed + quest.getTotalLevel(); i++){
+                participantDrawAdventureCard(sponsorplayer);
+            }
+            while(trimNeeded()){
+                trimHand(sponsorplayer);
+            }
             System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
             String input = scanner.nextLine();
             //return key
             if (input.isEmpty()) {
                 returnKeyClicked();
             }
-
-        }//while end
+        }
 
         //game terminates when at least one winner found
         System.out.println("Game ended! The winner(s): ");
@@ -75,26 +93,28 @@ public class Menu {
         return participants.isEmpty();
     }
 
-    public void stageFight(){
+    public boolean stageFight(){
         int currentStageIndex = 0;
 
-        while(!participantIsEmpty() || currentStageIndex < quest.getStagesSize()) {
+        while(!participantIsEmpty() && currentStageIndex <= quest.getStagesSize()) {
+
             if(currentStageIndex > 0) {
                 System.out.println("Stage " + (currentStageIndex) + " completed.");
             }
             loopDrawAdventureCard();
+
             for (int i = 0; i < participants.size(); i++) {
                 Player currentParticipant = participants.get(i);
                 System.out.println(currentParticipant.getName());
-                while (trimNeeded()) {
-                    trimHand();
+                while(currentParticipant.getHand().size()>12){
+                    trimHand(currentParticipant);
                 }
-
                 int participantCards = participantBuilds(currentStageIndex, currentParticipant);
 
-                if (participantCards < quest.getStageTotalValue(currentStageIndex)) {
+                if(!participantPassed(participantCards,quest.getStageTotalValue(currentStageIndex))){
                     System.out.println("Sorry, your value was smaller than the stage value.");
                     participants.remove(currentParticipant);
+                    i--;
                 }
 
                 System.out.println("Your round has ended, please hit RETURN to leave");
@@ -104,12 +124,24 @@ public class Menu {
                     returnKeyClicked();
                 }
             }
+
             currentStageIndex++;
         }
+
+        if(participants.isEmpty()){
+            return false;
+        }
+        return true;
     }
+
+    public boolean participantPassed(int playerValue, int stageTotal) {
+        return playerValue > stageTotal;
+    }
+
     public int participantBuilds(int currentStageIndex, Player currentParticipant){
         int totalPlayed = 0;
         List<Character> types = new ArrayList<>();
+
         System.out.println("Enter the card to play in " + (currentStageIndex+1) + " stage, enter quit to stop.");
         System.out.println(currentParticipant.getHand());
         String input = scanner.next();
@@ -138,7 +170,6 @@ public class Menu {
 
     public void loopDrawAdventureCard(){
         System.out.println("Each participant draws a card");
-        //add cards to each participant's hand
         for (int i = 0; i < participants.size(); i++) {
             participantDrawAdventureCard(participants.get(i));
         }
@@ -155,6 +186,7 @@ public class Menu {
         }
         sponsorplayer.getHand().remove(card);
         game.getDeck().discardEventCard(card);
+        cardsUsed++;
         return card;
     }
 
@@ -164,7 +196,6 @@ public class Menu {
         System.out.println("Enter the weapon card to be used in stage " + level);
         String card = scanner.next();
         List<Character> types = new ArrayList<>();
-
         //add the weapon cards to list
         while(!card.equals("quit")) {
             //check if sponsor has the given card
@@ -178,6 +209,7 @@ public class Menu {
                 sponsorplayer.getHand().remove(card);
                 game.getDeck().discardEventCard(card);
                 weaponCards.add(card);
+                cardsUsed++;
             }
             card = scanner.next();
         }
@@ -225,9 +257,8 @@ public class Menu {
         return currentplayer.getHand().size() > 12;
     }
 
-    public void trimHand(){
-        System.out.println(currentplayer.getName());
-        System.out.println("Hand: " + currentplayer.getHand());
+    public void trimHand(Player currentplayer){
+        System.out.println(currentplayer.getName() + " Hand: " + currentplayer.getHand());
         System.out.println("Enter the card to be trimmed: ");
         String trim = scanner.next();
         boolean trimmed = game.TrimCards(currentplayer,trim);
@@ -251,7 +282,7 @@ public class Menu {
         currentplayer.addCards(cards);
         currentplayer.getSortedHand();
         while(trimNeeded()) {
-            trimHand();
+            trimHand(currentplayer);
         }
     }
     public void Prosperity(){
@@ -263,7 +294,7 @@ public class Menu {
             game.getPlayers().get(i).addCards(cards);
             game.getPlayers().get(i).getSortedHand();
             while(trimNeeded()) {
-                trimHand();
+                trimHand(currentplayer);
             }
         }
     }
@@ -294,17 +325,12 @@ public class Menu {
     }
 
     public List<Player> findParticipants(){
-        //for clear the array from previous
         if(!participants.isEmpty()){
             participants.clear();
         }
-        int index;
-        if(currentRound == -1){
-            index = 0;
-        }else {
-            index = currentRound;
-        }
         Player current;
+        int index = game.getPlayers().indexOf(sponsorplayer);
+
         //loop to ask every player (other than sponsor) to participate
         for(int i = 0; i < 3; i++){
             index++;
@@ -371,6 +397,10 @@ public class Menu {
 
     public Quest getQuest(){
         return quest;
+    }
+
+    public int getCardsUsed() {
+        return cardsUsed;
     }
 }
 
