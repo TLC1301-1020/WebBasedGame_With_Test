@@ -1,5 +1,6 @@
 package org.example;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -32,8 +33,8 @@ public class Menu {
             //game starts
             newRoundMessage();
             String event = game.getDeck().drawEventCard();
-            System.out.println("Event card drawn: " + event);
 
+            System.out.println("Event card drawn: " + event);
             if (event.equals("Plague")) {
                 plagueCard();
             } else if (event.equals("Queen's Favor")) {
@@ -46,9 +47,11 @@ public class Menu {
                 }else{
                     findParticipants();
                 }
-                if(!participants.isEmpty()){
-                    startQuest(event,sponsorplayer, participants);
 
+                if(!participants.isEmpty()){
+                    //create the stages
+                    startQuest(event,sponsorplayer, participants);
+                    stageFight();
                 }
             }
             game.getDeck().discardEventCard(event);
@@ -58,8 +61,9 @@ public class Menu {
             if (input.isEmpty()) {
                 returnKeyClicked();
             }
-        //while end
-        }
+
+        }//while end
+
         //game terminates when at least one winner found
         System.out.println("Game ended! The winner(s): ");
         for (int i = 0; i < game.checkWinners().size(); i++) {
@@ -67,28 +71,109 @@ public class Menu {
         }
     }
 
-    public String buildFoeCard(int level) {
-            System.out.println("Enter 1 foe card to be used in stage" + level);
-            String card = scanner.next();
-            //check if the input is not foe card, more than 1 or the player does not have the input card
-            while (!card.contains("F") || card.length() > 3 || !sponsorplayer.getHand().contains(card)) {
-                System.out.println("Retry, only one foe card in your hand can be used.");
+    public boolean participantIsEmpty(){
+        return participants.isEmpty();
+    }
+
+    public void stageFight(){
+        int currentStageIndex = 0;
+
+        while(!participantIsEmpty() || currentStageIndex < quest.getStagesSize()) {
+            if(currentStageIndex > 0) {
+                System.out.println("Stage " + (currentStageIndex) + " completed.");
             }
+            loopDrawAdventureCard();
+            for (int i = 0; i < participants.size(); i++) {
+                Player currentParticipant = participants.get(i);
+                System.out.println(currentParticipant.getName());
+                while (trimNeeded()) {
+                    trimHand();
+                }
+
+                int participantCards = participantBuilds(currentStageIndex, currentParticipant);
+
+                if (participantCards < quest.getStageTotalValue(currentStageIndex)) {
+                    System.out.println("Sorry, your value was smaller than the stage value.");
+                    participants.remove(currentParticipant);
+                }
+
+                System.out.println("Your round has ended, please hit RETURN to leave");
+                String input = scanner.nextLine();
+                //return key
+                if (input.isEmpty()) {
+                    returnKeyClicked();
+                }
+            }
+            currentStageIndex++;
+        }
+    }
+    public int participantBuilds(int currentStageIndex, Player currentParticipant){
+        int totalPlayed = 0;
+        List<Character> types = new ArrayList<>();
+        System.out.println("Enter the card to play in " + (currentStageIndex+1) + " stage, enter quit to stop.");
+        System.out.println(currentParticipant.getHand());
+        String input = scanner.next();
+
+        while (!input.equals("quit")){
+            if((types.contains(input.charAt(0))) || (input.contains("F")) || (!currentParticipant.getHand().contains(input))){
+                System.out.println("The input card isn't available. Please try again");
+            } else {
+                game.getDeck().discardAdventureCard(input);
+                types.add(input.charAt(0));
+                totalPlayed += Integer.parseInt(input.substring(1));
+                currentParticipant.getHand().remove(input);
+                System.out.println("Card played, please continue:");
+            }
+            System.out.println(currentParticipant.getHand());
+            input = scanner.next();
+        }
+        System.out.println("Total played by you: " + totalPlayed);
+        return totalPlayed;
+    }
+
+    public void participantDrawAdventureCard(Player currentParticipant){
+        currentParticipant.getHand().add(game.getDeck().drawAdventureCard());
+        currentParticipant.getSortedHand();
+    }
+    public void loopDrawAdventureCard(){
+        System.out.println("Each participant draws a card");
+        //add cards to each participant's hand
+        for (int i = 0; i < participants.size(); i++) {
+            participantDrawAdventureCard(participants.get(i));
+        }
+    }
+
+    public String buildFoeCard(int level) {
+        System.out.println(sponsorplayer.getHand());
+        System.out.println("Enter 1 foe card to be used in stage" + level);
+        String card = scanner.next();
+        //check if the input is not foe card, more than 1 or the player does not have the input card
+        while (!card.contains("F") || card.length() > 3 || !sponsorplayer.getHand().contains(card)) {
+            System.out.println("Retry, only one foe card in your hand can be used.");
+            card = scanner.next();
+        }
+        sponsorplayer.getHand().remove(card);
+        game.getDeck().discardEventCard(card);
         return card;
     }
+
     public List<String> buildWeaponCards(int level){
         List<String> weaponCards = new ArrayList<>();
-
+        System.out.println(sponsorplayer.getHand());
         System.out.println("Enter the weapon card to be used in stage " + level);
         String card = scanner.next();
+        List<Character> types = new ArrayList<>();
 
         //add the weapon cards to list
         while(!card.equals("quit")) {
             //check if sponsor has the given card
-            if (!sponsorplayer.getHand().contains(card)) {
-                System.out.println("Retry, you do not have this card.");
+            if (!sponsorplayer.getHand().contains(card) || (types.contains(card.charAt(0)))) {
+                System.out.println("Retry, you do not have this card or you are using the same type.");
+            } else if(card.contains("F")){
+                System.out.println("Retry, you cannot build another foe card.");
             } else {
                 //delete card from sponsor hand and add to the pile
+                types.add(card.charAt(0));
                 sponsorplayer.getHand().remove(card);
                 game.getDeck().discardEventCard(card);
                 weaponCards.add(card);
@@ -108,30 +193,21 @@ public class Menu {
             boolean added = quest.initializeStages(count - 1, stageFoe, weaponCards);
 
             if (!added) {
-                count = adjustStage(count);
+                System.out.println("Retry. Current stage has to have a greater value than previous stage");
+                sponsorplayer.getHand().add(stageFoe);
+                game.getDeck().removeAdventureCardFromDiscarded(stageFoe);
+                if(!weaponCards.isEmpty()) {
+                    sponsorplayer.addCards(weaponCards);
+                }
+                sponsorplayer.getSortedHand();
             }else{
                 count++;
             }
 
         }
+        System.out.println("The quest has been built, hit return to leave the hot seat");
+        returnKeyClicked();
     }
-
-    public int adjustStage(int currentLevel){
-        System.out.println("Current stage has to have a greater value than the previous stage");
-        Stage stage = quest.getStageIndex(currentLevel);
-
-        //add the stage cards back to sponsor hand
-        sponsorplayer.addCards(stage.getWeaponCards());
-        sponsorplayer.getHand().add(stage.getFoeCard());
-        //remove stage cards from the discarded deck
-        for(int i = 0; i < stage.getWeaponCards().size(); i++) {
-            game.getDeck().removeAdventureCardFromDiscarded(stage.getWeaponCards().get(i));
-
-        }
-        game.getDeck().removeAdventureCardFromDiscarded(stage.getFoeCard());
-        return currentLevel;
-    }
-
     //update round player in order
     public void updateRound() {
         if (currentRound == -1) {
@@ -144,12 +220,12 @@ public class Menu {
             }
         currentplayer = game.getPlayers().get(currentRound);
         sponsorplayer = currentplayer;
-
     }
 
     public boolean trimNeeded(){
-        return currentplayer.getHand().size() >= 13;
+        return currentplayer.getHand().size() > 12;
     }
+
     public void trimHand(){
         System.out.println(currentplayer.getName());
         System.out.println("Hand: " + currentplayer.getHand());
@@ -198,7 +274,6 @@ public class Menu {
         int choice = 0; //user choice
 
         System.out.println("Quest!");
-
         while (count != 0) {
             System.out.println(getSponsorplayer().getName() + ": ");
             if (!enoughFoeCard(questLevel)) {
@@ -215,6 +290,7 @@ public class Menu {
                 count--;
             }
         }
+        System.out.println("No sponsor found!");
         return false;
     }
 
@@ -233,6 +309,9 @@ public class Menu {
         //loop to ask every player (other than sponsor) to participate
         for(int i = 0; i < 3; i++){
             index++;
+            if(index == 4){
+                index = 0;
+            }
             current = game.getPlayers().get(index);
             System.out.println(current.getName() + ":");
             System.out.println("Would you like to participate in the quest?");
@@ -284,7 +363,9 @@ public class Menu {
         sponsorplayer = currentplayer;
     }
 
-
+    public void setScanner(Scanner scanner){
+        this.scanner = scanner;
+    }
 
 }
 

@@ -7,13 +7,14 @@ public class Stage {
     private String foeCard;
     private List<String> weaponCards;
     private int totalValue;
+    private int index;    //stage index in the array
     private int stageLevel;
-
-    public Stage(int stageLevel,String foeCard, List<String> weaponCards) {
-        this.stageLevel = stageLevel;
+    public Stage(int index,String foeCard, List<String> weaponCards) {
+        this.index = index;
         this.foeCard = foeCard;
         this.weaponCards = weaponCards;
         this.totalValue = addSponsorTotal(foeCard,weaponCards);
+        this.stageLevel = index + 1;
     }
 
     public int addSponsorTotal(String foeCard, List<String> weaponCards) {
@@ -31,6 +32,16 @@ public class Stage {
     }
 
     //getters
+    //index of the stage in the stages
+    public int getIndex(){
+        return index;
+    }
+
+    //stage level in the quest
+    public int getLevel(){
+        return stageLevel;
+    }
+
     public int getCardValue(String card) {
         return Integer.parseInt(card.substring(1));
     }
@@ -45,9 +56,6 @@ public class Stage {
 
     public String getFoeCard(){
         return foeCard;
-    }
-    public int getStageLevel(){
-        return stageLevel+1;
     }
 }
 

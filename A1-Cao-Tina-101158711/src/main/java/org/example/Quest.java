@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Quest {
-    private int level;
+    private int totalLevel; //total stage level
     private Player sponsor;
     private List<Stage> stages;
     private List<Player> participants;
     private String event;
 
     public Quest(String event,Player sponsor,List<Player> participants){
-        this.level = Integer.parseInt(event.substring(1));
+        this.totalLevel = Integer.parseInt(event.substring(1));
         this.sponsor = sponsor;
         stages = new ArrayList<>();
         this.participants = participants;
@@ -31,15 +31,20 @@ public class Quest {
         }
         return true;
     }
-    public int getStages(){
-        return stages.size();
-    }
 
-    public Stage getStageIndex(int level){
+    public Stage getIndexOfStageAtLevel(int level){
         return stages.get(level-1);
     }
 
-    public void removeParticipant(Player participant){
-        participants.remove(participant);
+    public Stage getStageAtLevel(int level){
+        return stages.get(level-1);
+    }
+    public int getStageTotalValue(int index){
+        return stages.get(index).getTotalValue();
+    }
+
+    public int getStagesSize(){
+        int value = Integer.parseInt(event.substring(1));
+        return value - 1;
     }
 }
