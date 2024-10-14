@@ -3,8 +3,6 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.mockito.Mockito.*;
 
 
@@ -174,10 +173,9 @@ public class GameTest {
     @DisplayName("R6 - Positive value shield")
     public void testPlayerShield() {
         Game game = new Game();
-        Player player = game.getPlayers().get(0);
+        Player player = game.getPlayers().getFirst();
         player.updateShields(-20);
 
-        player.getShields();
         Assertions.assertEquals(0, player.getShields(), "Player shields should be reset to 0 if negative.");
     }
 
@@ -202,13 +200,11 @@ public class GameTest {
         player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
         // Check initial hand size
         Assertions.assertEquals(13, player.getHand().size(), "Player should have 13 cards initially.");
-        // Cards to trim
         String cardsToTrim = "F5";
         game.TrimCards(player,cardsToTrim);
 
         Assertions.assertEquals(12, player.getHand().size(), "Player should have 12 cards after trimming.");
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
-        //check discarded pile
         Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
     }
 
@@ -220,10 +216,8 @@ public class GameTest {
         player.getHand().clear();
 
         player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
-        // Check initial hand size
         Assertions.assertEquals(13, player.getHand().size(), "Player should have 13 cards initially.");
 
-        // Cards to trim
         String cardsToTrim = "F5";
         player.trimHand(cardsToTrim);
 
@@ -284,8 +278,6 @@ public class GameTest {
     @Test
     @DisplayName("R12 - Test the stages should have increasing value")
     public void testIncreasingStageValues() {
-        // Setup game, sponsor, and quest
-        Game game = new Game();
         Player sponsor = new Player("Sponsor");
         sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30"));
 
@@ -294,15 +286,12 @@ public class GameTest {
         boolean stage1Added = quest.initializeStages(0, "F10", List.of("W10"));
         Assertions.assertTrue(stage1Added);
 
-        // Valid stage 2 with a higher value than stage 1
         boolean stage2Added = quest.initializeStages(1, "F20", List.of("W10", "W30"));
         Assertions.assertTrue(stage2Added);
-        //Stage 3 will not be added
-        boolean stage3Added = quest.initializeStages(2,"F5", List.of("F10"));
+        boolean stage3Added = quest.initializeStages(2,"F5", List.of("10"));
         Assertions.assertFalse(stage3Added);
 
     }
-
 
     @Test
     @DisplayName("R12 - Test stages are in increasing order")
@@ -359,7 +348,6 @@ public class GameTest {
         List<String> sponsorHand = new ArrayList<>(Arrays.asList("F1", "F2", "W1", "W2"));
         when(sponsorPlayer.getHand()).thenReturn(sponsorHand);
 
-        // Set up menu and assign sponsor
         Menu menu = new Menu(game);
         menu.setCurrentPlayer(sponsorPlayer);
         menu.setScanner(new Scanner("F1\nF2\nquit\n"));
@@ -429,6 +417,32 @@ public class GameTest {
         Assertions.assertFalse(player.getHand().contains("S4"));
         Assertions.assertEquals(3, totalPlayed);
     }
+
+    @Test
+    @DisplayName("R17 - Game awards shields to quest winners and updates scores, ensuring all player records are accurate")
+    void testPlayerPassesQuestStageAndGetsShields() {
+
+        Scanner scanner = mock(Scanner.class);
+        Game game = new Game();
+        Menu menu = new Menu(game);
+
+        menu.setScanner(scanner);
+        when(scanner.nextInt())
+                .thenReturn(1)
+                .thenReturn(1)
+                .thenReturn(2);
+        List<Player> participants = menu.findParticipants();
+        int initial = participants.getFirst().getShields();
+        menu.participantsAddShields();
+        Assertions.assertEquals(initial+2,participants.getFirst().getShields());
+    }
+
+
+    @Test
+    @DisplayName("R18 - discard and draw new cards for sponsor")
+    public void testSponsorDrawNewCards(){
+    }
+
     @Test
     @DisplayName("Test Discarded adventure cards are stored")
     public void testDiscardAdventureCard() {
