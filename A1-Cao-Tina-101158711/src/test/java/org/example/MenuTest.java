@@ -82,6 +82,20 @@ class MenuTest {
     }
 
     @Test
+    @DisplayName("R10.2 - Check if enough foe card by player to be sponsor")
+    public void enoughFoeCard(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        Player player = game.getPlayers().getFirst();
+        player.getHand().clear();
+        player.addCards(List.of("F1","F3"));
+        menu.setCurrentPlayer(player);
+        Assertions.assertFalse(menu.enoughFoeCard(5));
+        Assertions.assertTrue(menu.enoughFoeCard(2));
+    }
+
+
+    @Test
     @DisplayName("R11 - Test Stage initialization")
     public void testStageInitialization(){
         Game game = new Game();
@@ -96,18 +110,15 @@ class MenuTest {
         Assertions.assertEquals("F1",quest.getStageAtLevel(1).getFoeCard());
         Assertions.assertEquals(31,quest.getStageAtLevel(1).getTotalValue());
     }
-
+    
     @Test
-    @DisplayName("R10 - Check if enough foe card by player to be sponsor")
-    public void enoughFoeCard(){
+    @DisplayName("R18 - discard and draw new cards for sponsor")
+    public void testSponsorDrawNewCards(){
+        String quest = "Q5";
         Game game = new Game();
         Menu menu = new Menu(game);
-        Player player = game.getPlayers().getFirst();
-        player.getHand().clear();
-        player.addCards(List.of("F1","F3"));
-        menu.setCurrentPlayer(player);
-        Assertions.assertFalse(menu.enoughFoeCard(5));
-        Assertions.assertTrue(menu.enoughFoeCard(2));
+        Player p = game.getPlayers().getFirst();
+        menu.participantDrawAdventureCard(p,Integer.parseInt(quest));
     }
 
 }
