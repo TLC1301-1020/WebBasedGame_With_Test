@@ -36,47 +36,62 @@ public class Menu {
             System.out.println("Event card drawn: " + event);
             if (event.equals("Plague")) {
                 plagueCard();
+
             } else if (event.equals("Queen's Favor")) {
                 QueensFavor();
+
             } else if (event.equals("Prosperity")) {
                 Prosperity();
                 while(trimNeeded()) {
                     trimHand(currentplayer);
                 }
             } else {
+                //quest card, try to find sponsor, no sponsors
                 if(!findingSponsor(event)){
                     System.out.println("No sponsor for the quest, game continues.");
-                    break;
-                }else{
-                    findParticipants();
-                }
+                    System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
+                    String input = scanner.nextLine();
+                    //return key
+                    if (input.isEmpty()) {
+                        returnKeyClicked();
+                    }
 
-                //there's participant(s)
-                if(!participants.isEmpty()){
-                    //quest play
-                    startQuest(event,sponsorplayer, participants);
-                    if(stageFight()){
-                        //update shields
-                        participantsAddShields();
-                    }else{
-                        System.out.println("Quest failed!");
+                    continue;
+                //sponsor found, find participants
+                }else {
+                    findParticipants();
+                    if (participantIsEmpty()) {
+                        System.out.println("No participants, game continues.");
+                        System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
+                        String input = scanner.nextLine();
+                        //return key
+                        if (input.isEmpty()) {
+                            returnKeyClicked();
+                        }
+                        continue;
+                    } else {
+                        startQuest(event, sponsorplayer, participants);
+                        if (stageFight()) {
+                            //update shields
+                            participantsAddShields();
+
+                            //sponsor update cards
+                            for (int i = 0; i < cardsUsed + quest.getTotalLevel(); i++) {
+                                participantDrawAdventureCard(sponsorplayer);
+                            }
+                            while (trimNeeded()) {
+                                trimHand(sponsorplayer);
+                            }
+                        } else {
+                            System.out.println("Quest failed!");
+                        }
                     }
                 }
                 game.getDeck().discardEventCard(event);
                 if (!game.checkWinners().isEmpty()) {
                     break;
-                }else {
-                    //sponsor update cards
-                    for (int i = 0; i < cardsUsed + quest.getTotalLevel(); i++) {
-                        participantDrawAdventureCard(sponsorplayer);
-                    }
-                    while(trimNeeded()){
-                        trimHand(sponsorplayer);
-                    }
+                }
             }
-
-            }
-
             System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
             String input = scanner.nextLine();
             //return key
@@ -85,9 +100,10 @@ public class Menu {
             }
         }
         //game terminates when at least one winner found
-        printWinner();
+        if(!game.checkWinners().isEmpty()){
+            printWinner();
+        }
     }
-
     public boolean participantIsEmpty(){
         return participants.isEmpty();
     }
@@ -109,12 +125,18 @@ public class Menu {
             }
             loopDrawAdventureCard();
 
+            System.out.println("Eligible participant at this stage: ");
+            for(int i = 0; i < participants.size(); i++){
+                System.out.println(participants.get(i).getName());
+            }
+            System.out.println("\n");
             for (int i = 0; i < participants.size(); i++) {
                 Player currentParticipant = participants.get(i);
-                System.out.println(currentParticipant.getName());
-                while(currentParticipant.getHand().size()>12){
+                System.out.println("Currently player at this stage: " + currentParticipant.getName());
+                while(currentParticipant.getHand().size() > 12){
                     trimHand(currentParticipant);
                 }
+
                 int participantCards = participantBuilds(currentStageIndex, currentParticipant);
 
                 if(!participantPassed(participantCards,quest.getStageTotalValue(currentStageIndex))){
@@ -157,7 +179,7 @@ public class Menu {
                 types.add(input.charAt(0));
                 totalPlayed += Integer.parseInt(input.substring(1));
                 currentParticipant.getHand().remove(input);
-                System.out.println("Card played, please continue:");
+                System.out.println("Card played, please continue (quit to stop):");
             }
             System.out.println(currentParticipant.getHand());
             input = scanner.next();
@@ -321,10 +343,12 @@ public class Menu {
     public void startQuest(String event,Player sponsorplayer, List<Player> participants){
         quest = new Quest(event,sponsorplayer,participants);
         int count = 1;
+
         while (count <= Integer.parseInt(event.substring(1))) {
             String stageFoe = buildFoeCard(count);
             List<String> weaponCards = buildWeaponCards(count);
             boolean added = quest.initializeStages(count - 1, stageFoe, weaponCards);
+
             if (!added) {
                 System.out.println("Retry. Current stage has to have a greater value than previous stage");
                 sponsorplayer.getHand().add(stageFoe);
@@ -343,7 +367,7 @@ public class Menu {
 
     public String buildFoeCard(int level) {
         System.out.println(sponsorplayer.getHand());
-        System.out.println("Enter 1 foe card to be used in stage" + level);
+        System.out.println("Enter 1 foe card to be used in stage" + level + " quit to stop");
         String card = scanner.next();
 
         while (!card.contains("F") || card.length() > 3 || !sponsorplayer.getHand().contains(card)) {
@@ -404,9 +428,6 @@ public class Menu {
         this.scanner = scanner;
     }
 
-    public List<Player> getParticipants(){
-        return participants;
-    }
 
 }
 

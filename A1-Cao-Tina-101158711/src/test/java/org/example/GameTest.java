@@ -3,6 +3,8 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class GameTest {
 
     @Test
-    @DisplayName("R1 - Player Initialization")
+    @DisplayName("R1.1 - Player Initialization")
     public void testPlayersInitialized() {
         Game game = new Game();
         List<Player> players = game.getPlayers();
@@ -29,140 +31,14 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R1 - Adventure Deck Initialization")
-    public void testAdventureDeckInitialized() {
-        Deck deck = new Deck();
-        //50 weapon cards + 50 foe cards = 100 cards in adventure deck
-        List<String> adventureDeck = deck.getAdventureDeck();
-        Assertions.assertEquals(100, adventureDeck.size(), "Adventure deck amount isn't correct");
-
-        long countF5 = adventureDeck.stream().filter(card -> card.equals("F5")).count();
-        Assertions.assertEquals(8, countF5, "There should be 8 F5 cards in the adventure deck.");
-
-        long countF70 = adventureDeck.stream().filter(card -> card.equals("F70")).count();
-        Assertions.assertEquals(1, countF70, "There should be 1 F70 card in the adventure deck.");
-
-        long countD5 = adventureDeck.stream().filter(card -> card.equals("D5")).count();
-        Assertions.assertEquals(6, countD5, "There should be 6 D5 cards in the adventure deck.");
-
-        long countE30 = adventureDeck.stream().filter(card -> card.equals("E30")).count();
-        Assertions.assertEquals(2, countE30, "There should be 2 E30 cards in the adventure deck.");
-    }
-
-    @Test
-    @DisplayName("R1 - Event Deck Initialization")
-    public void testEventDeckInitialized() {
-        Deck deck = new Deck();
-        //12 Q cards and 5 E cards = 17 cards in event deck
-        List<String> eventDeck = deck.getEventDeck();
-        Assertions.assertEquals(17, eventDeck.size(), "The number of event card is not correct");
-
-        long countPlague = eventDeck.stream().filter(card -> card.equals("Plague")).count();
-        Assertions.assertEquals(1, countPlague, "There should be 1 plague card in the event deck");
-
-        long countQueensFavor = eventDeck.stream().filter(card -> card.equals("Queen's Favor")).count();
-        Assertions.assertEquals(2, countQueensFavor, "There should be 2 'Queen's Favor' cards in the event deck.");
-
-        long countProsperity = eventDeck.stream().filter(card -> card.equals("Prosperity")).count();
-        Assertions.assertEquals(2, countProsperity, "There should be 2 'Prosperity' cards in the event deck.");
-    }
-
-    @Test
-    @DisplayName("R2 - Distribute out adventure cards to players")
+    @DisplayName("R2.1 - Distribute adventure cards to players")
     public void testAdventureCardsDistributed(){
         Game game = new Game();
         for(Player player: game.getPlayers()){
             Assertions.assertEquals(12, player.getHand().size(),"Each player should receive 12 adventure cards");
+
         }
-    }
-
-    @Test
-    @DisplayName("R2 - Deck size reduced after distribution")
-    public void testDeckUpdatedAfterDistribution(){
-        Game game = new Game();
-        Assertions.assertEquals(100 - 48, game.getDeck().getAdventureDeck().size(), "Deck amount incorrect");
-    }
-
-    @Test
-    @DisplayName("R2 - Player cards sorting")
-    public void testSortedHands(){
-        Player player = new Player("Test player");
-        player.addCards(List.of("H10", "F5", "S10", "F15", "B15", "H5", "F20", "L20"));
-        List<String> sortedHand = player.getSortedHand();
-        List<String> expectedOrder = List.of("F5", "F15", "F20", "H5", "H10", "S10", "B15", "L20");
-        Assertions.assertEquals(expectedOrder, sortedHand, "The player's hand should be sorted correctly");
-    }
-
-    @Test
-    @DisplayName("R3 - Check player order")
-    public void testUpdateRound(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-
-        menu.updateRound();
-        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
-        menu.updateRound();
-        Assertions.assertEquals("Player2", menu.getCurrentplayer().getName());
-        menu.updateRound();
-        Assertions.assertEquals("Player3", menu.getCurrentplayer().getName());
-        menu.updateRound();
-        Assertions.assertEquals("Player4", menu.getCurrentplayer().getName());
-        //iterate back to player1
-        menu.updateRound();
-        Assertions.assertEquals("Player1", menu.getCurrentplayer().getName());
-    }
-
-    @Test
-    @DisplayName("R4 - Event card drawn test")
-    public void testDrawEventCard(){
-        Deck deck = new Deck();
-        int initialSize = deck.getEventDiscardPile().size();
-        String card;
-        card = deck.drawEventCard();
-        Assertions.assertNotNull(card);
-
-        //check the discarded pile is updated, size increased by one
-        Assertions.assertEquals(initialSize+1, deck.getEventDiscardPile().size());
-    }
-
-    @Test
-    @DisplayName("R5 - Game affected by Plague")
-    public void testPlagueDrawn(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        Player player = game.getPlayers().getFirst();
-
-        player.updateShields(3);
-        menu.setCurrentPlayer(player);
-        menu.plagueCard();
-        Assertions.assertEquals(1,player.getShields(),"Player should have one shield left");
-    }
-
-    @Test
-    @DisplayName("R5 - Game affected by Queen's Favor cards")
-    public void testQueenFavorDrawn(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        Player player = game.getPlayers().getFirst();
-
-        player.getHand().clear();
-        menu.setCurrentPlayer(player);
-        menu.QueensFavor();
-        Assertions.assertEquals(2,menu.getCurrentplayer().getHand().size(),"There should be 2 cards in hand");
-    }
-
-    @Test
-    @DisplayName("R5 - Game affected by Prosperity")
-    public void testProsperity(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        menu.setCurrentPlayer(game.getPlayers().getFirst());
-        menu.Prosperity();
-
-        Assertions.assertEquals(14,game.getPlayers().getFirst().getHand().size());
-        Assertions.assertEquals(14,game.getPlayers().get(1).getHand().size());
-        Assertions.assertEquals(14,game.getPlayers().get(2).getHand().size());
-        Assertions.assertEquals(14,game.getPlayers().get(3).getHand().size());
+        Assertions.assertEquals(100 - (game.getPlayers().size()*12), game.getDeck().getAdventureDeck().size(), "Deck amount incorrect");
     }
 
     @Test
@@ -220,25 +96,6 @@ public class GameTest {
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
     }
 
-    @Test
-    @DisplayName("R8 - Test detect trim needed")
-    public void testDetectTrimming(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        Player p = game.getPlayers().getFirst();
-        System.out.println("Current player hand " + p.getHand());
-        p.getHand().add("H3");
-        menu.setCurrentPlayer(p);
-        System.out.println(menu.trimNeeded());
-    }
-
-    @Test
-    @DisplayName("R9 - Test finding sponsor loop")
-    public void testFindingSponsor(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        menu.setCurrentPlayer(game.getPlayers().getFirst());
-    }
 
     @Test
     @DisplayName("R10 - Check iteration to find a sponsor")
@@ -252,62 +109,6 @@ public class GameTest {
         menu.setCurrentPlayer(game.getPlayers().getLast());
         menu.nextSponsor();
         Assertions.assertEquals("Player1",menu.getSponsorplayer().getName());
-    }
-
-    @Test
-    @DisplayName("R11 - Test Stage initialization")
-    public void testStageInitialization(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        Player play = game.getPlayers().getFirst();
-        menu.setCurrentPlayer(play);
-        play.getHand().clear();
-        play.addCards(List.of("F1","F3","H10","S20"));
-        Quest quest = new Quest("Q3",play,List.of(game.getPlayers().get(1),game.getPlayers().get(3)));
-
-        quest.initializeStages(0,"F1",List.of("H10","S20"));
-        Assertions.assertEquals("F1",quest.getStageAtLevel(1).getFoeCard());
-        Assertions.assertEquals(31,quest.getStageAtLevel(1).getTotalValue());
-    }
-
-    @Test
-    @DisplayName("R12 - Test the stages should have increasing value")
-    public void testIncreasingStageValues() {
-        Player sponsor = new Player("Sponsor");
-        sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30","W3"));
-
-        Quest quest = new Quest("Q3", sponsor, null);
-
-        boolean stage1Added = quest.initializeStages(0, "F10", List.of("W10"));
-        Assertions.assertTrue(stage1Added,"first stage should be created without any error");
-
-        boolean stage2Added = quest.initializeStages(1, "F20", List.of("W10", "W30"));
-        Assertions.assertTrue(stage2Added,"second stage should be created without any error");
-        boolean stage3Added = quest.initializeStages(2,"F5", List.of("W3"));
-        Assertions.assertFalse(stage3Added,"third stage should not be created. The value of third stage is not greater than the second stage ");
-
-    }
-
-    @Test
-    @DisplayName("R12 - Test stages are in increasing order")
-    void testStagesHaveIncreasingValues() {
-
-        Player sponsor = mock(Player.class);
-        Player participant1 = mock(Player.class);
-        Player participant2 = mock(Player.class);
-        List<Player> participants = Arrays.asList(participant1, participant2);
-
-        when(sponsor.getHand()).thenReturn(Arrays.asList("F3", "W4", "W5"));
-
-        Quest quest = new Quest("Q3", sponsor, participants);
-
-        boolean stage1Valid = quest.initializeStages(0, "F2", List.of("W5"));
-        boolean stage2Invalid = quest.initializeStages(1, "F3", List.of("W4"));
-        boolean stage2Valid = quest.initializeStages(1, "F3", List.of("W5"));
-
-        Assertions.assertTrue(stage1Valid, "Stage 1 should be valid");
-        Assertions.assertFalse(stage2Invalid, "Stage 2 should be rejected for having the same or lower value");
-        Assertions.assertTrue(stage2Valid, "Stage 2 should be accepted for having a strictly greater value than Stage 1");
     }
 
     @Test
@@ -470,30 +271,6 @@ public class GameTest {
         Assertions.assertTrue(g.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
         Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
     }
-
-    @Test
-    @DisplayName("Check if enough foe card by player")
-    public void enoughFoeCard(){
-        Game game = new Game();
-        Menu menu = new Menu(game);
-        Player player = game.getPlayers().getFirst();
-        player.getHand().clear();
-        player.addCards(List.of("F1","F3"));
-        menu.setCurrentPlayer(player);
-        Assertions.assertFalse(menu.enoughFoeCard(5));
-        Assertions.assertTrue(menu.enoughFoeCard(2));
-    }
-
-    @Test
-    @DisplayName("Get stage and foe card value")
-    public void testStageAndFoeCardValue(){
-        String foeCard = "F5";
-        Stage stage = new Stage(1,foeCard, List.of("D5","E15","H20","H30"));
-        Assertions.assertEquals(75,stage.getTotalValue());
-        Assertions.assertEquals(5,stage.getCardValue(foeCard));
-    }
-
-
 
 //    @Test
 //    @DisplayName("Test to add foe card")

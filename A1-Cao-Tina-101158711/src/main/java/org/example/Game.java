@@ -19,7 +19,7 @@ public class Game{
         distributeAdventureCards();
     }
 
-    private  void initializePlayers(){
+    private void initializePlayers(){
         players = new ArrayList<>();
         for(int i = 1; i <= 4; i++){
             players.add(new Player("Player" + i));
@@ -42,10 +42,11 @@ public class Game{
     }
 
     public List<Player> checkWinners() {
+
         List<Player> winners = new ArrayList<>();
-        for (Player player : players) {
-            if (player.getShields() >= 7) {
-                winners.add(player);
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getShields() >= 7) {
+                winners.add(players.get(i));
             }
         }
         return winners;
