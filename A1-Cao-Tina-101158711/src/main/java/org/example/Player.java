@@ -16,10 +16,6 @@ public class Player {
         this.shields = 0;
     }
 
-    public String getName(){
-        return name;
-    }
-
     public void addCards(List<String> cards){
         hand.addAll(cards);
         getSortedHand();
@@ -46,21 +42,12 @@ public class Player {
         return hand;
     }
 
-    public List<String> getHand() {
-        return hand;
-    }
-
     public void updateShields(int diff) {
         shields += diff;
         if(shields < 0){
             shields = 0;
         }
     }
-
-    public int getShields(){
-        return shields;
-    }
-
     public Boolean trimHand(String cardToTrim) {
         if (hand.contains(cardToTrim)) {
             hand.remove(cardToTrim);
@@ -69,7 +56,6 @@ public class Player {
             return false;
         }
     }
-
     public int countFoeCards(){
         int count = 0;
         for(int i = 0; i < hand.size(); i++){
@@ -80,4 +66,14 @@ public class Player {
         return count;
     }
 
+    public int getShields(){
+        return shields;
+    }
+    public List<String> getHand() {
+        return hand;
+    }
+
+    public String getName(){
+        return name;
+    }
 }

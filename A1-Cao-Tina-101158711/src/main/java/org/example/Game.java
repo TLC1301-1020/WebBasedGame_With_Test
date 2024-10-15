@@ -33,13 +33,6 @@ public class Game{
             deck.getAdventureDeck().subList(0,12).clear();
         }
     }
-    public List<Player> getPlayers(){
-        return players;
-    }
-
-    public Deck getDeck(){
-        return deck;
-    }
 
     public List<Player> checkWinners() {
 
@@ -60,7 +53,6 @@ public class Game{
             deck.addDiscardedEventCards();
         }
     }
-
     public boolean TrimCards(Player currentlyPlayer,String card){
         currentlyPlayer.getSortedHand();
         Boolean trimmed = currentlyPlayer.trimHand(card);
@@ -72,4 +64,11 @@ public class Game{
         }
     }
 
+    //getters
+    public List<Player> getPlayers(){
+        return players;
+    }
+    public Deck getDeck(){
+        return deck;
+    }
 }

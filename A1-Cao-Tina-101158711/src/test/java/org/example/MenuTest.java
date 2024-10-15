@@ -110,7 +110,7 @@ class MenuTest {
         Assertions.assertEquals("F1",quest.getStageAtLevel(1).getFoeCard());
         Assertions.assertEquals(31,quest.getStageAtLevel(1).getTotalValue());
     }
-    
+
     @Test
     @DisplayName("R18 - discard and draw new cards for sponsor")
     public void testSponsorDrawNewCards(){
@@ -118,7 +118,7 @@ class MenuTest {
         Game game = new Game();
         Menu menu = new Menu(game);
         Player p = game.getPlayers().getFirst();
-        menu.participantDrawAdventureCard(p,Integer.parseInt(quest));
+        menu.participantDrawAdventureCard(p,Integer.parseInt(quest.substring(1)));
     }
 
 }

@@ -3,14 +3,11 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -94,7 +91,6 @@ public class GameTest {
         Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
     }
 
-
     @Test
     @DisplayName("R10.1 - Test find a sponsor")
     public void testIterateSponsor(){
@@ -112,6 +108,7 @@ public class GameTest {
     @Test
     @DisplayName("R13 - Identifies quest participants")
     void testFindParticipants() {
+
         Scanner scanner = mock(Scanner.class);
         Game game = new Game();
         Menu menu = new Menu(game);
@@ -132,7 +129,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R14 - test only one foe card being used at each stage")
+    @DisplayName("R14.1 - test only one foe card being used at each stage")
     void testOnlyFoeCard() {
         Game game = mock(Game.class);
         Deck deck = mock(Deck.class);
@@ -155,7 +152,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R14 - test non-repeated type weapon card can be used to build")
+    @DisplayName("R14.2 - test non-repeated type weapon card can be used to build")
     public void testInvalidWeaponCardEntry() {
         Game game = mock(Game.class);
         Deck deck = mock(Deck.class);
@@ -190,26 +187,33 @@ public class GameTest {
     @Test
     @DisplayName("R16 - test participant card discarding")
     void testCardDiscardingAndInputValidation() {
-        Game mockGame = mock(Game.class);
-        Deck mockDeck = mock(Deck.class);
-        when(mockGame.getDeck()).thenReturn(mockDeck);
+            Game mockGame = mock(Game.class);
+            Deck mockDeck = mock(Deck.class);
+            when(mockGame.getDeck()).thenReturn(mockDeck);
 
-        Player player = new Player("TestPlayer");
-        List<String> hand = new ArrayList<>();
-        hand.add("S3");
-        hand.add("F5");
-        player.getHand().addAll(hand);
 
-        Menu menu = new Menu(mockGame);
-        menu.setCurrentPlayer(player);
+            Player player = new Player("TestPlayer");
+            List<String> hand = new ArrayList<>();
+            hand.add("S3");
+            hand.add("F5");
+            player.getHand().addAll(hand);
 
-        Scanner inputScanner = new Scanner("F5 S4 S3 quit\n");
-        menu.setScanner(inputScanner);
-        int totalPlayed = menu.participantBuilds(0, player);
-        verify(mockDeck, times(1)).discardAdventureCard("S3");
-        Assertions.assertTrue(player.getHand().contains("F5"));
-        Assertions.assertFalse(player.getHand().contains("S4"));
-        Assertions.assertEquals(3, totalPlayed);
+            Menu menu = new Menu(mockGame);
+            menu.setCurrentPlayer(player);
+
+            Scanner inputScanner = new Scanner("F5\nS3\nquit\n");
+            menu.setScanner(inputScanner);
+
+            int totalPlayed = menu.participantBuilds(0, player);
+
+
+            verify(mockDeck, times(1)).discardAdventureCard("S3");
+
+            Assertions.assertTrue(player.getHand().contains("F5"), "Player should still have F5 in hand.");
+            Assertions.assertFalse(player.getHand().contains("S3"), "Player should not have S3 in hand after discarding.");
+
+            Assertions.assertEquals(3, totalPlayed, "Total played should be 3.");
+
     }
 
     @Test
@@ -235,7 +239,7 @@ public class GameTest {
 
 
     @Test
-    @DisplayName("Test Discarded adventure cards are stored")
+    @DisplayName("R9 - Test Discarded adventure cards are stored")
     public void testDiscardAdventureCard() {
         String card = "F10";
         Game g = new Game();
@@ -249,24 +253,21 @@ public class GameTest {
         //check reuse the card
         Assertions.assertTrue(g.getDeck().getAdventureDiscardPile().isEmpty(),"Discard pile should be empty");
         Assertions.assertTrue(g.getDeck().getAdventureDeck().contains(card), "Discard pile should contain the discarded card.");
-    }
 
-    @Test
-    @DisplayName("Test Discarded event cards are stored")
-    public void testDiscardEventCard() {
 
-        String card = "Plague";
-        Game g = new Game();
+        card = "Plague";
+        Game g2 = new Game();
 
-        g.getDeck().discardEventCard(card);
-        g.getDeck().getEventDeck().clear();
+        g2.getDeck().discardEventCard(card);
+        g2.getDeck().getEventDeck().clear();
         //check adding card to the discard event card deck
-        Assertions.assertEquals(1, g.getDeck().getEventDiscardPile().size(),"Discard pile should contain 1 card");
-        Assertions.assertTrue(g.getDeck().getEventDiscardPile().contains(card), "Discard pile should contain the discarded card.");
-        g.reuseDeck();
+        Assertions.assertEquals(1, g2.getDeck().getEventDiscardPile().size(),"Discard pile should contain 1 card");
+        Assertions.assertTrue(g2.getDeck().getEventDiscardPile().contains(card), "Discard pile should contain the discarded card.");
+        g2.reuseDeck();
         //check reuse the card
-        Assertions.assertTrue(g.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
-        Assertions.assertTrue(g.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
+        Assertions.assertTrue(g2.getDeck().getEventDiscardPile().isEmpty(),"Discard pile should be empty");
+        Assertions.assertTrue(g2.getDeck().getEventDeck().contains(card), "Discard pile should contain the discarded card.");
+
     }
 
 //    @Test

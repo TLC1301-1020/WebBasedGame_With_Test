@@ -19,6 +19,7 @@ public class Deck{
         eventDiscardPile = new ArrayList<>();
         adventureDiscardPile = new ArrayList<>();
     }
+
     //total of 100 cards in A
     private void initializeAdventureDeck(){
         int[] foeValues = {5,10,15,20,25,30,35,40,50,70};
@@ -109,7 +110,6 @@ public class Deck{
         return drawnCard;
     }
 
-
     public String drawEventCard() {
         if (eventDeck.isEmpty()) {
             addDiscardedEventCards();
@@ -124,10 +124,24 @@ public class Deck{
         return drawnCard;
         }
 
-    public List<String> getEventDiscardPile(){
-        return eventDiscardPile;
+    public boolean removeAdventureCardFromDiscarded(String card){
+        if(eventDiscardPile.remove(card)){
+            return true;
+        }
+        return false;
     }
 
+    //true if empty
+    public boolean checkEventCard(){
+        return eventDeck.isEmpty();
+    }
+
+    //true if empty
+    public boolean checkAdventureCard(){
+        return adventureDeck.isEmpty();
+    }
+
+    //getters
     public List<String> getAdventureDiscardPile(){
         return adventureDiscardPile;
     }
@@ -140,20 +154,9 @@ public class Deck{
         return eventDeck;
     }
 
-    public boolean removeAdventureCardFromDiscarded(String card){
-        if(eventDiscardPile.remove(card)){
-            return true;
-        }
-        return false;
-    }
-    //true if empty
-    public boolean checkEventCard(){
-        return eventDeck.isEmpty();
+    public List<String> getEventDiscardPile(){
+        return eventDiscardPile;
     }
 
-    //true if empty
-    public boolean checkAdventureCard(){
-        return adventureDeck.isEmpty();
-    }
 
 }

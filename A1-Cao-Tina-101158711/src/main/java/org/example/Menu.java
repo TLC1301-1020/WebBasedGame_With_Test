@@ -1,8 +1,8 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
+import static java.lang.System.exit;
 
 public class Menu {
     private Game game;
@@ -26,11 +26,13 @@ public class Menu {
 
     public void displayMainMenu() {
         while (game.checkWinners().isEmpty()) {
+
             updateRound();
             //check if current player needs to trim hand
             while (trimNeeded()) {
                 trimHand(currentplayer);
             }
+
             //game starts
             newRoundMessage();
             String event = game.getDeck().drawEventCard();
@@ -53,11 +55,11 @@ public class Menu {
                     System.out.println("No sponsor for the quest, game continues.");
                     System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
                     String input = scanner.nextLine();
+
                     //return key
                     if (input.isEmpty()) {
                         returnKeyClicked();
                     }
-
                     continue;
                 //sponsor found, find participants
                 }else {
@@ -72,6 +74,7 @@ public class Menu {
                         }
                         continue;
                     } else {
+                        Collections.sort(participants, Comparator.comparing(Player::getName));
                         startQuest(event, sponsorplayer, participants);
                         if (stageFight()) {
                             //update shields
@@ -86,6 +89,7 @@ public class Menu {
                         } else {
                             System.out.println("Quest failed!");
                         }
+
                     }
                 }
                 game.getDeck().discardEventCard(event);
@@ -95,15 +99,19 @@ public class Menu {
             }
             System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
             String input = scanner.nextLine();
+
+
             //return key
             if (input.isEmpty()) {
                 returnKeyClicked();
             }
+
         }
         //game terminates when at least one winner found
         if(!game.checkWinners().isEmpty()){
             printWinner();
         }
+
     }
     public boolean participantIsEmpty(){
         return participants.isEmpty();
@@ -171,14 +179,14 @@ public class Menu {
         List<Character> types = new ArrayList<>();
         String input;
         System.out.println("Would you like to quit the quest? Enter quit to quit");
-        input = scanner.next();
+        input = scanner.nextLine();
         if (input.equals("quit")) {
             participants.remove(currentParticipant);
             return -1;
         }
         System.out.println("Enter the card to play in " + (currentStageIndex+1) + " stage, enter quit to stop.");
         System.out.println(currentParticipant.getHand());
-        input = scanner.next();
+        input = scanner.nextLine();
 
         while (!input.equals("quit")){
             if((types.contains(input.charAt(0))) || (input.contains("F")) || (!currentParticipant.getHand().contains(input))){
@@ -192,7 +200,7 @@ public class Menu {
                 System.out.println("Card played in this stage " + cardPlayed + " please continue (quit to stop):");
             }
             System.out.println(currentParticipant.getHand());
-            input = scanner.next();
+            input = scanner.nextLine();
         }
         System.out.println("Card played in this stage " + cardPlayed + " please continue (quit to stop):");
         System.out.println("Total played by you: " + totalPlayed);
@@ -234,7 +242,7 @@ public class Menu {
     public void trimHand(Player currentplayer){
         System.out.println(currentplayer.getName() + " Hand: " + currentplayer.getHand());
         System.out.println("Enter the card to be trimmed: ");
-        String trim = scanner.next();
+        String trim = scanner.nextLine();
         boolean trimmed = game.TrimCards(currentplayer,trim);
         if(trimmed){
             System.out.println("Card trimmed.");
@@ -382,10 +390,16 @@ public class Menu {
     public String buildFoeCard(int level) {
         System.out.println(sponsorplayer.getName() + ": " + sponsorplayer.getHand());
         System.out.println("Enter 1 foe card to be used in stage " + level + " quit to stop");
-        String card = scanner.next();
+        String card = scanner.nextLine();
 
         while (!card.contains("F") || card.length() > 3 || !sponsorplayer.getHand().contains(card)) {
-            System.out.println("Retry, stage cannot be empty, or only one foe card can be used at this stage.");
+            if(!card.contains("F")){
+                System.out.println("Please play a valid Foe card");
+            }else if(card.length() > 3){
+                System.out.println("Cannot play more than 1 card");
+            }else if(!sponsorplayer.getHand().contains(card)){
+                System.out.println("You don't have this card");
+            }
             card = scanner.next();
         }
         foeCardAtStage = card;
@@ -402,7 +416,7 @@ public class Menu {
 
         System.out.println(sponsorplayer.getHand());
         System.out.println("Enter the weapon card to be used in stage " + level + " quit to stop");
-        String card = scanner.next();
+        String card = scanner.nextLine();
         List<Character> types = new ArrayList<>();
 
         while(!card.equals("quit")) {
@@ -418,8 +432,10 @@ public class Menu {
                 weaponCards.add(card);
                 cardsUsed++;
             }
-            card = scanner.next();
+            card = scanner.nextLine();
+
         }
+        System.out.println("\n");
         return weaponCards;
     }
 
