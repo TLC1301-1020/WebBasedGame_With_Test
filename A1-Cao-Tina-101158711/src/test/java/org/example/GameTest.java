@@ -3,8 +3,6 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
@@ -98,16 +96,16 @@ public class GameTest {
 
 
     @Test
-    @DisplayName("R10 - Check iteration to find a sponsor")
+    @DisplayName("R10.1 - Test find a sponsor")
     public void testIterateSponsor(){
         Game game = new Game();
         Menu menu = new Menu(game);
         menu.setCurrentPlayer(game.getPlayers().getFirst());
-        menu.nextSponsor();
+        menu.nextSponsor(menu.getCurrentplayer());
         Assertions.assertEquals("Player2", menu.getSponsorplayer().getName());
 
         menu.setCurrentPlayer(game.getPlayers().getLast());
-        menu.nextSponsor();
+        menu.nextSponsor(menu.getCurrentplayer());
         Assertions.assertEquals("Player1",menu.getSponsorplayer().getName());
     }
 
@@ -147,6 +145,7 @@ public class GameTest {
         Menu menu = new Menu(game);
         menu.setCurrentPlayer(sponsorPlayer);
         menu.setScanner(new Scanner("F1\nF2\nquit\n"));
+        menu.setSponsorplayer(sponsorPlayer);
 
         String foeCard = menu.buildFoeCard(1);
 
@@ -169,7 +168,7 @@ public class GameTest {
         Menu menu = new Menu(game);
         menu.setCurrentPlayer(sponsorPlayer);
         menu.setScanner(new Scanner("W1\nS2\nW3\nquit\n"));
-
+        menu.setSponsorplayer(sponsorPlayer);
         List<String> weaponCards = menu.buildWeaponCards(1);
 
         Assertions.assertEquals(2, weaponCards.size());
@@ -228,14 +227,12 @@ public class GameTest {
                 .thenReturn(2);
         List<Player> participants = menu.findParticipants();
         int initial = participants.getFirst().getShields();
-        menu.participantsAddShields();
-        Assertions.assertEquals(initial+2,participants.getFirst().getShields());
+        String event = "Q5";
+        menu.participantsAddShields(event);
+        Assertions.assertEquals(initial+5,participants.getFirst().getShields());
     }
 
-    @Test
-    @DisplayName("R18 - discard and draw new cards for sponsor")
-    public void testSponsorDrawNewCards(){
-    }
+
 
     @Test
     @DisplayName("Test Discarded adventure cards are stored")

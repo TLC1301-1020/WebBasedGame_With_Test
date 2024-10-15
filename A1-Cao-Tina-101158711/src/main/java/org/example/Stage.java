@@ -9,6 +9,7 @@ public class Stage {
     private int totalValue;
     private int index;    //stage index in the array
     private int stageLevel;
+    
     public Stage(int index,String foeCard, List<String> weaponCards) {
         this.index = index;
         this.foeCard = foeCard;
