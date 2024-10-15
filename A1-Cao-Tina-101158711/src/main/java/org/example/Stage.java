@@ -40,10 +40,6 @@ public class Stage {
         return totalValue;
     }
 
-    public List<String> getWeaponCards(){
-        return weaponCards;
-    }
-
     public String getFoeCard(){
         return foeCard;
     }

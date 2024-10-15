@@ -40,6 +40,9 @@ public class Menu {
                 QueensFavor();
             } else if (event.equals("Prosperity")) {
                 Prosperity();
+                while(trimNeeded()) {
+                    trimHand(currentplayer);
+                }
             } else {
                 if(!findingSponsor(event)){
                     System.out.println("No sponsor for the quest, game continues.");
@@ -175,19 +178,20 @@ public class Menu {
         }
     }
 
-    //update round player in order
+
     public void updateRound() {
+        if (game.getPlayers().isEmpty()) {
+            throw new IllegalStateException("No players in the game.");
+        }
         if (currentRound == -1) {
             currentRound = 0;
-        } else if (currentRound == 3) {
-            currentplayer = game.getPlayers().get(currentRound);
-            currentRound = 0;
-        }else {
-            currentRound = (currentRound + 1) % 4;
-            }
+        } else {
+            currentRound = (currentRound + 1) % game.getPlayers().size();
+        }
         currentplayer = game.getPlayers().get(currentRound);
         sponsorplayer = currentplayer;
     }
+
 
     public boolean trimNeeded(){
         return currentplayer.getHand().size() > 12;
@@ -234,9 +238,6 @@ public class Menu {
             cards.add(game.getDeck().drawAdventureCard());
             game.getPlayers().get(i).addCards(cards);
             game.getPlayers().get(i).getSortedHand();
-            while(trimNeeded()) {
-                trimHand(currentplayer);
-            }
         }
     }
     public void printWinner(){
@@ -316,6 +317,7 @@ public class Menu {
         }
         return participants;
     }
+
     public void startQuest(String event,Player sponsorplayer, List<Player> participants){
         quest = new Quest(event,sponsorplayer,participants);
         int count = 1;
@@ -368,7 +370,6 @@ public class Menu {
             } else if(card.contains("F")){
                 System.out.println("Retry, you cannot build another foe card.");
             } else {
-
                 types.add(card.charAt(0));
                 sponsorplayer.getHand().remove(card);
                 game.getDeck().discardEventCard(card);
@@ -379,7 +380,6 @@ public class Menu {
         }
         return weaponCards;
     }
-
 
     //getters
     public Player getCurrentplayer(){
@@ -394,14 +394,6 @@ public class Menu {
             System.out.println();
         }
     }
-
-    public int getCardUsed(){
-        return cardsUsed;
-    }
-
-    public Quest getQuest(){
-        return quest;
-    }
     //setters
     public void setCurrentPlayer(Player player){
         currentplayer = player;
@@ -412,10 +404,9 @@ public class Menu {
         this.scanner = scanner;
     }
 
-    public void setCardsUsed(int value){
-        cardsUsed = value;
+    public List<Player> getParticipants(){
+        return participants;
     }
-
 
 }
 
