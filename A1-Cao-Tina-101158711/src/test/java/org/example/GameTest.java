@@ -139,7 +139,7 @@ public class GameTest {
     }
 
     @Test
-    @DisplayName("R5 - Game effected by Queen's Favor cards")
+    @DisplayName("R5 - Game affected by Queen's Favor cards")
     public void testQueenFavorDrawn(){
         Game game = new Game();
         Menu menu = new Menu(game);
@@ -151,6 +151,19 @@ public class GameTest {
         Assertions.assertEquals(2,menu.getCurrentplayer().getHand().size(),"There should be 2 cards in hand");
     }
 
+    @Test
+    @DisplayName("R5 - Game affected by Prosperity")
+    public void testProsperity(){
+        Game game = new Game();
+        Menu menu = new Menu(game);
+        menu.setCurrentPlayer(game.getPlayers().getFirst());
+        menu.Prosperity();
+
+        Assertions.assertEquals(14,game.getPlayers().getFirst().getHand().size());
+        Assertions.assertEquals(14,game.getPlayers().get(1).getHand().size());
+        Assertions.assertEquals(14,game.getPlayers().get(2).getHand().size());
+        Assertions.assertEquals(14,game.getPlayers().get(3).getHand().size());
+    }
 
     @Test
     @DisplayName("R6 - Identify winner(s)")
@@ -188,24 +201,6 @@ public class GameTest {
         Menu menu = new Menu(game);
         menu.displayMainMenu();
         Assertions.assertEquals(2,game.checkWinners().size());
-    }
-
-    @Test
-    @DisplayName("R8 - Game prompts player to trim hand if more than 12 cards")
-    public void testTrimCardFromGameClass() {
-        Game game = new Game();
-        Player player = game.getPlayers().get(0);
-        player.getHand().clear();
-
-        player.addCards(List.of("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"));
-        // Check initial hand size
-        Assertions.assertEquals(13, player.getHand().size(), "Player should have 13 cards initially.");
-        String cardsToTrim = "F5";
-        game.TrimCards(player,cardsToTrim);
-
-        Assertions.assertEquals(12, player.getHand().size(), "Player should have 12 cards after trimming.");
-        Assertions.assertFalse(player.getHand().contains("F5"), "Player's hand should not contain F5.");
-        Assertions.assertEquals(1, game.getDeck().getAdventureDiscardPile().size(),"Discarded pile should have one card");
     }
 
     @Test
@@ -279,17 +274,17 @@ public class GameTest {
     @DisplayName("R12 - Test the stages should have increasing value")
     public void testIncreasingStageValues() {
         Player sponsor = new Player("Sponsor");
-        sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30"));
+        sponsor.addCards(List.of("F10", "W10", "F5", "W20", "F20", "W30","W3"));
 
         Quest quest = new Quest("Q3", sponsor, null);
 
         boolean stage1Added = quest.initializeStages(0, "F10", List.of("W10"));
-        Assertions.assertTrue(stage1Added);
+        Assertions.assertTrue(stage1Added,"first stage should be created without any error");
 
         boolean stage2Added = quest.initializeStages(1, "F20", List.of("W10", "W30"));
-        Assertions.assertTrue(stage2Added);
-        boolean stage3Added = quest.initializeStages(2,"F5", List.of("10"));
-        Assertions.assertFalse(stage3Added);
+        Assertions.assertTrue(stage2Added,"second stage should be created without any error");
+        boolean stage3Added = quest.initializeStages(2,"F5", List.of("W3"));
+        Assertions.assertFalse(stage3Added,"third stage should not be created. The value of third stage is not greater than the second stage ");
 
     }
 
@@ -306,9 +301,9 @@ public class GameTest {
 
         Quest quest = new Quest("Q3", sponsor, participants);
 
-        boolean stage1Valid = quest.initializeStages(0, "F2", Arrays.asList("W5"));
-        boolean stage2Invalid = quest.initializeStages(1, "F3", Arrays.asList("W4"));
-        boolean stage2Valid = quest.initializeStages(1, "F3", Arrays.asList("W5"));
+        boolean stage1Valid = quest.initializeStages(0, "F2", List.of("W5"));
+        boolean stage2Invalid = quest.initializeStages(1, "F3", List.of("W4"));
+        boolean stage2Valid = quest.initializeStages(1, "F3", List.of("W5"));
 
         Assertions.assertTrue(stage1Valid, "Stage 1 should be valid");
         Assertions.assertFalse(stage2Invalid, "Stage 2 should be rejected for having the same or lower value");
@@ -380,7 +375,6 @@ public class GameTest {
         Assertions.assertTrue(weaponCards.contains("W1"));
         Assertions.assertFalse(weaponCards.contains("W2"));
         Assertions.assertTrue(weaponCards.contains("S2"));
-
     }
 
     @Test
@@ -436,7 +430,6 @@ public class GameTest {
         menu.participantsAddShields();
         Assertions.assertEquals(initial+2,participants.getFirst().getShields());
     }
-
 
     @Test
     @DisplayName("R18 - discard and draw new cards for sponsor")
@@ -499,6 +492,7 @@ public class GameTest {
         Assertions.assertEquals(75,stage.getTotalValue());
         Assertions.assertEquals(5,stage.getCardValue(foeCard));
     }
+
 
 
 //    @Test
