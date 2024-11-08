@@ -54,7 +54,8 @@ class AcceptanceTest {
                 .thenReturn(1)
                 .thenReturn(1)
                 .thenReturn(1)
-                .thenReturn(1);
+                .thenReturn(1)
+                .thenReturn(-1);
 
         //input for set up stages
         when(mockScanner.nextLine())
@@ -148,8 +149,8 @@ class AcceptanceTest {
                 .thenReturn("E30")
                 .thenReturn("quit")
                 .thenReturn("\n")
-                //ended player 2 trim
 
+                //ended player 2 trim
                 .thenReturn("S10")
                 .thenReturn("S10")
                 .thenReturn("S10")
@@ -185,26 +186,21 @@ class AcceptanceTest {
         Player player1 = game.getPlayers().get(0); // Assuming players are in a list
         assertEquals(0, player1.getShields(), "Player 1 should have no shields.");
         assertTrue(player1.getHand().containsAll(Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "B15", "B15", "L20")));
-        System.out.println("Player 1's hand " + player1.getHand());
-        System.out.println("Player 1's shields " + player1.getShields());
 
 
         Player player2 = game.getPlayers().get(1);
         assertEquals(12, player2.getHand().size(), "Player 2 should have 12 cards in hand.");
-        System.out.println("Player 2's card number " + player2.getHand().size());
+
 
         Player player3 = game.getPlayers().get(2);
         assertEquals(0, player3.getShields(), "Player 3 should have no shields.");
         System.out.println(player3.getHand());
         assertTrue(player3.getHand().containsAll(Arrays.asList("F5", "F5", "F15", "F30", "S10")));
-        System.out.println("Player 3's hand " + player3.getHand());
-        System.out.println("Player 3's shields " + player3.getShields());
+
 
         Player player4 = game.getPlayers().get(3);
         assertEquals(4, player4.getShields(), "Player 4 should have gained 4 shields.");
         assertTrue(player4.getHand().containsAll(Arrays.asList("F15", "F15", "F40", "L20")));
-        System.out.println("Player 4's hand " + player4.getHand());
-        System.out.println("Player 4's shields " + player4.getShields());
 
 
 

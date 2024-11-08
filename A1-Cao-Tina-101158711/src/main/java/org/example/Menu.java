@@ -38,6 +38,7 @@ public class Menu {
             String event = game.getDeck().drawEventCard();
 
             System.out.println("Event card drawn: " + event);
+
             if (event.equals("Plague")) {
                 plagueCard();
 
@@ -49,6 +50,7 @@ public class Menu {
                 while(trimNeeded()) {
                     trimHand(currentplayer);
                 }
+
             } else {
                 //quest card, try to find sponsor, no sponsors
                 if(!findingSponsor(event)){
@@ -83,15 +85,18 @@ public class Menu {
 
                             participantDrawAdventureCard(sponsorplayer,cardsUsed + quest.getTotalLevel());
 
-                            while (trimNeeded()) {
+                            while (sponsorTrim()) {
                                 trimHand(sponsorplayer);
+                                System.out.println("HEREEEEEE" + sponsorplayer.getHand() + "\n");
                             }
+
                         } else {
                             System.out.println("Quest failed!");
                         }
 
                     }
                 }
+
                 game.getDeck().discardEventCard(event);
                 if (!game.checkWinners().isEmpty()) {
                     break;
@@ -100,6 +105,11 @@ public class Menu {
             System.out.println("Your round has ended, please hit RETURN to leave the Hot seat");
             String input = scanner.nextLine();
 
+            System.out.println("Would you like to continue the game");
+            int res = scanner.nextInt();
+            if(res == -1){
+                break;
+            }
 
             //return key
             if (input.isEmpty()) {
@@ -111,6 +121,7 @@ public class Menu {
         if(!game.checkWinners().isEmpty()){
             printWinner();
         }
+
 
     }
     public boolean participantIsEmpty(){
@@ -234,6 +245,9 @@ public class Menu {
         currentplayer = game.getPlayers().get(currentRound);
     }
 
+    public boolean sponsorTrim(){
+        return sponsorplayer.getHand().size() > 12;
+    }
 
     public boolean trimNeeded(){
         return currentplayer.getHand().size() > 12;
@@ -390,7 +404,8 @@ public class Menu {
     public String buildFoeCard(int level) {
         System.out.println(sponsorplayer.getName() + ": " + sponsorplayer.getHand());
         System.out.println("Enter 1 foe card to be used in stage " + level + " quit to stop");
-        String card = scanner.nextLine();
+        String card = "";
+        card = scanner.nextLine();
 
         while (!card.contains("F") || card.length() > 3 || !sponsorplayer.getHand().contains(card)) {
             if(!card.contains("F")){
