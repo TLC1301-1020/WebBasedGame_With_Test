@@ -87,7 +87,6 @@ public class Menu {
 
                             while (sponsorTrim()) {
                                 trimHand(sponsorplayer);
-                                System.out.println("HEREEEEEE" + sponsorplayer.getHand() + "\n");
                             }
 
                         } else {
