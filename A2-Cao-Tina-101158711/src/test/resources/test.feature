@@ -48,6 +48,6 @@ Feature: Quest Game
      And players chose to participate
      And player 1 builds the stages for quest "Q2"
      And players failed to complete the quest "Q2"
-     Then sponsor player hand should be correctly updated
+     Then players hands should be correctly updated
      And all participants have not gained any shields
 

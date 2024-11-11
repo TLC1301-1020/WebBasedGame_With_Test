@@ -2,6 +2,8 @@ package org.example;
 
 import io.cucumber.java.en.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -93,8 +95,8 @@ public class QuestFailedScenarioSteps {
         menu.quest(event);
     }
 
-    @Then("sponsor player hand should be correctly updated")
-    public void sponsor_player_hand_should_be_correctly_updated(){
+    @Then("players hands should be correctly updated")
+    public void players_hands_should_be_correctly_updated(){
         //player draws S10 after the quest, # of cards draw = Q2(2) + usedcards(4) = 6 -> add 6 S10
         //original hand remaining = 8, as 4 played in the quest
         //6+8 need to trim 2 out, remaining S10 should be 4
@@ -105,6 +107,15 @@ public class QuestFailedScenarioSteps {
             }
         }
         assertEquals(4,count);
+        assertEquals(game.getPlayers().get(1).getHand().size(),11);
+        assertEquals(game.getPlayers().get(2).getHand().size(),11);
+        assertEquals(game.getPlayers().get(3).getHand().size(),11);
+
+        assertTrue(game.getPlayers().get(0).getHand().containsAll(Arrays.asList("F5","F5","F10","F10","F15","F20","D5","S10","S10","S10","S10","B15")));
+        assertTrue(game.getPlayers().get(1).getHand().containsAll(Arrays.asList("F5", "F5", "F20", "F70", "D5", "S10", "S10", "H10", "H10", "B15", "E30")));
+        assertTrue(game.getPlayers().get(2).getHand().containsAll(Arrays.asList("F5", "F5", "F10", "F20", "D5", "S10", "S10", "H10", "H10", "L20", "E30")));
+        assertTrue(game.getPlayers().get(3).getHand().containsAll(Arrays.asList("F5", "F5", "F10", "D5", "S10", "S10", "S10", "H10", "H10", "L20", "E30")));
+
     }
     @Then("all participants have not gained any shields")
     public void all_participants_have_not_gained_any_shields(){
