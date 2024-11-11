@@ -14,8 +14,8 @@ public class A1ScenarioSteps {
     private Deck mockDeck;
     private Scanner mockScanner;
 
-    @Given("the game is created with players hands set to values")
-    public void the_game_is_created_with_players_hands_set_to_values() {
+    @Given("first game is created with players hands set to values")
+    public void first_game_is_created_with_players_hands_set_to_values() {
         mockDeck = mock(Deck.class);
         mockScanner = mock(Scanner.class);
         game = new Game() {
@@ -63,8 +63,8 @@ public class A1ScenarioSteps {
 
     }
 
-    @When("player 1 declines to sponsor the quest {string}, second player sponsors")
-    public void first_player_draws_a_quest_second_sponsors(String quest){
+    @When("player 1 declines to sponsor the quest {string}, player2 sponsors")
+    public void first_player_draws_a_quest_player2_sponsors(String quest){
         when(mockScanner.nextInt()).thenReturn(2)
                                     .thenReturn(1);
         menu.findingSponsor(quest);
@@ -79,7 +79,7 @@ public class A1ScenarioSteps {
         menu.findParticipants();
     }
 
-    @When("sponsor sets the stage for {string}")
+    @When("player2 sets the stage for {string}")
     public void sponsor_sets_the_stage(String quest){
         Player sponsor = menu.getSponsorplayer();
         List<Player> participants = menu.getParticipants();
@@ -192,7 +192,7 @@ public class A1ScenarioSteps {
         menu.quest(event);
     }
 
-    @Then("sponsor player should have exact cards")
+    @Then("sponsor player should have exact 12 cards")
     public void sponsor_player_should_have_exact_cards(){
         assertTrue(menu.getSponsorplayer().getHand().containsAll(List.of("F5","F5","D5","S10","S10","S10","S10","S10","S10","S10","S10","S10")));
         assertEquals(menu.getSponsorplayer().getHand().size(),12);
@@ -215,9 +215,6 @@ public class A1ScenarioSteps {
         assertTrue(game.getPlayers().get(0).getHand().containsAll(Arrays.asList("F5", "F10", "F15", "F15", "F30", "H10", "B15", "B15", "L20")));
         assertTrue(game.getPlayers().get(2).getHand().containsAll(Arrays.asList("F5", "F5", "F15", "F30", "S10")));
         assertTrue(game.getPlayers().get(3).getHand().containsAll(Arrays.asList("F15", "F15", "F40", "L20")));
-
-
-
     }
 
 

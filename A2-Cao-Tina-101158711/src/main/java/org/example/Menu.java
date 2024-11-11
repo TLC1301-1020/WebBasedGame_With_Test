@@ -2,7 +2,6 @@ package org.example;
 
 import java.util.*;
 
-import static java.lang.System.exit;
 
 public class Menu {
     private Game game;
@@ -118,14 +117,14 @@ public class Menu {
             //update shields
             System.out.println("Quest is completed!");
             participantsAddShields(event);
-            sponsorDrawAdventureCard(sponsorplayer, cardsUsed + quest.getTotalLevel());
-
-            while (sponsorTrim()) {
-                trimHand(sponsorplayer);
-            }
 
         } else {
             System.out.println("Quest failed!");
+        }
+        sponsorDrawAdventureCard(sponsorplayer, cardsUsed + quest.getTotalLevel());
+
+        while (sponsorTrim()) {
+            trimHand(sponsorplayer);
         }
     }
 
@@ -320,8 +319,10 @@ public class Menu {
     public void printWinner() {
         System.out.println("Game ended! The winner(s): ");
         for (int i = 0; i < game.checkWinners().size(); i++) {
-            System.out.print(game.checkWinners().get(i).getName() + "\t");
+            System.out.print(game.checkWinners().get(i).getName() + "\t ");
         }
+        System.out.println("\n");
+
     }
 
     //Quest related
