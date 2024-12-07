@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OH The GAME</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <h1>WELCOME TO THE GAME :3</h1>
+</header>
+
+<div class="main-container">
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="info-box event-box">
+            <h3>Event</h3>
+            <p id="event-info"></p>
+        </div>
+
+        <button id="one-button"></button>
+        <button id="two-button"></button>
+        <button id="three-button" ></button>
+        <button id="four-button"></button>
+
+        <div class="info-box shield-board">
+            <h3>Player Shield </h3>
+            <div class="player-section" id="player-1">
+                <h4>Player 1</h4>
+                <p id="shields-1"></p>
+            </div>
+            <div class="player-section" id="player-2">
+                <h4>Player 2</h4>
+                <p id="shields-2"></p>
+            </div>
+            <div class="player-section" id="player-3">
+                <h4>Player 3</h4>
+                <p id="shields-3"></p>
+            </div>
+            <div class="player-section" id="player-4">
+                <h4>Player 4</h4>
+                <p id="shields-4"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Field -->
+    <div class="main-field">
+        <div class="message-box" id="message-box">
+        </div>
+
+        <div class="info-box player-info">
+            <h3>Current Player</h3>
+            <p><strong>Name:</strong> <span id="player-name" style="color:DodgerBlue"></span></p>
+            <p><strong>Hand:</strong> <span id="player-hand" style="color:Blue"></span></p>
+        </div>
+
+        <div class="text-input">
+            <label for="build-input">Build Cards:</label>
+            <div class="input-container">
+                <input type="text" id="build-input" placeholder="Enter cards to build...">
+                <button id="build-button">Build</button>
+            </div>
+        </div>
+
+        <div class="text-input">
+            <label for="play-input">Play Cards:</label>
+            <div class="input-container">
+                <input type="text" id="play-input" placeholder="Enter cards to play...">
+                <button id="play-button">Play</button>
+            </div>
+        </div>
+
+        <div class="text-input">
+            <label for="discard-input">Discard Cards:</label>
+            <div class="input-container">
+                <input type="text" id="discard-input" placeholder="Enter cards to discard...">
+                <button id="discard-button">Discard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="info-box hand-size-board">
+            <h3>Player Hand</h3>
+            <div class="player-section" id="hand-size-1">
+                <h4>Player 1</h4>
+                <p id="hand-player-1"></p>
+            </div>
+            <div class="player-section" id="hand-size-2">
+                <h4>Player 2</h4>
+                <p id="hand-player-2"></p>
+            </div>
+            <div class="player-section" id="hand-size-3">
+                <h4>Player 3</h4>
+                <p id="hand-player-3"></p>
+            </div>
+            <div class="player-section" id="hand-size-4">
+                <h4>Player 4</h4>
+                <p id="hand-player-4"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="buttons">
+    <button id="start-button">Start</button>
+    <button id="event-button">Event</button>
+    <button id="yes-button">Yes</button>
+    <button id="no-button">No</button>
+    <button id="quit-button">Quit</button>
+    <button id="return-button">Return</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+/* General Body Setup */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+}
+
+/* Header */
+header {
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+    color: black;
+    font-size: 18px;
+}
+
+.main-container {
+    display: flex;
+    width: 70%;
+    gap: 15px;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+/* Left Panel */
+.left-panel {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Main Field */
+.main-field {
+    flex-grow: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+
+}
+
+
+/* Info Box Setup */
+.info-box {
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.event-box, .shield-board, .total-value-box, .player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-box {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    padding: 8px;
+}
+
+.shield-board {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 8px;
+}
+
+.shield-board .player-section {
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.total-value-box {
+    background-color: #e2e3e5;
+    border-color: #b8b9bb;
+    padding: 8px;
+}
+
+.player-info {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    font-size: 15px;
+}
+
+.player-info p {
+    margin: 5px 0;
+    font-size: 17px;
+}
+
+/* Button Styles */
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: Grey;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.buttons button:hover {
+    background-color: rgb(216, 210, 210);
+}
+
+
+/* Input Field and Submit Button */
+.text-input {
+    margin-top: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-container input {
+    padding: 8px;
+    width: 65%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.message-box {
+     background-color: #f8d7da;
+     color: #721c24;
+     padding: 15px;
+     margin: 10px 0;
+     border-radius: 5px;
+     border: 1px solid #f5c6cb;
+     font-size: 16px;
+     font-family: Arial, sans-serif;
+     width: 100%;
+     box-sizing: border-box;
+ }
+
+
+.input-container button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 15px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.input-container button:hover {
+    background-color: Black;
+}
+
+/* General Panel Styling */
+.right-panel {
+    width: 20%;
+    padding: 15px;
+    background-color: #1553;
+    border-left: 2px solid #ccc;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.hand-size-board {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.player-section {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+
+.player-section p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+}
+.test {
+    background-color: transparent;
+    width: 0;
+    height: 0;
+    position: relative;
+    border: 2px solid transparent;
+}
