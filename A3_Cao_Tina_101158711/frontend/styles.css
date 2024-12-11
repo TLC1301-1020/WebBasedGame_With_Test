@@ -12,32 +12,31 @@ body {
 
 /* Header */
 header {
-    width: 100%;
+    width: 30%;
     text-align: center;
-    padding: 15px;
+    padding: 5px;
     background-color: #f9f9f9;
     color: black;
-    font-size: 18px;
+    font-size: 10px;
 }
 
 .main-container {
     display: flex;
     width: 70%;
-    gap: 15px;
-    padding: 15px;
+    gap: 20px;
+    padding: 10px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 8px;
     margin-top: 20px;
-    font-size: 15px;
+    font-size: 13px;
 }
 
-/* Left Panel */
 .left-panel {
-    width: 20%;
+    width: 12%;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 2px;
 }
 
 /* Main Field */
@@ -107,7 +106,6 @@ header {
     font-size: 17px;
 }
 
-/* Button Styles */
 .buttons {
     display: flex;
     justify-content: space-around;
@@ -125,12 +123,8 @@ header {
     font-size: 14px;
 }
 
-.buttons button:hover {
-    background-color: rgb(216, 210, 210);
-}
 
 
-/* Input Field and Submit Button */
 .text-input {
     margin-top: 15px;
     text-align: center;
@@ -178,7 +172,6 @@ header {
     background-color: Black;
 }
 
-/* General Panel Styling */
 .right-panel {
     width: 20%;
     padding: 15px;
@@ -201,16 +194,17 @@ header {
     border-bottom: 1px solid #eaeaea;
 }
 
-
 .player-section p {
     margin: 5px 0 0;
     font-size: 14px;
     color: #666;
 }
+
 .test {
-    background-color: transparent;
-    width: 0;
-    height: 0;
-    position: relative;
-    border: 2px solid transparent;
+    background-color: black;
+    width: auto;
+    height: auto;
+    position: absolute;
+    border: none;
+    opacity: 0;
 }
