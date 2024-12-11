@@ -361,9 +361,7 @@ async function test () {
 
     await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Current player turn ended! Please return."));
     await driver.findElement(By.id('return-button')).click();
-
     await driver.sleep(2000);
-
 
     await driver.wait(until.elementTextIs(msgBox,"Game ended! Winner of the game: Player3"));
     await driver.sleep(2000);
