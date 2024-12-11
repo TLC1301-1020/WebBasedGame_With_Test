@@ -161,14 +161,16 @@ async function test () {
     await driver.sleep(2000);
 
     currentPlayerName = await driver.findElement(By.id('player-name'));
-    await driver.wait(until.elementTextIs(currentPlayerName,"Player2")0);
-    await driver.wait(until.elementTextIs(msgBox,"Quest passed! Shields are updated. Sponsor trim hand by 4 cards!")0);
+    await driver.wait(until.elementTextIs(currentPlayerName,"Player2"));
+    await driver.wait(until.elementTextIs(msgBox,"Quest passed! Shields are updated. Sponsor trim hand by 4 cards!"));
     await driver.findElement(By.id('discard-input')).sendKeys("S10 S10 S10 S10");
     await driver.findElement(By.id('discard-button')).click();
     await driver.sleep(2000);
 
-    await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Current player turn ended! Please return.")0);
+    await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Current player turn ended! Please return."));
     await driver.findElement(By.id('return-button')).click();
+    await driver.sleep(3000);
+
     await driver.findElement(By.id('quit-button')).click();
     await driver.sleep(2000);
 

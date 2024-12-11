@@ -296,6 +296,8 @@ async function test () {
     await driver.findElement(By.id('discard-input')).sendKeys("F20 F25 F30");
     await driver.findElement(By.id('discard-button')).click();
     await driver.wait(until.elementTextIs(msgBox,"Game ended! Winner of the game: Player2 Player4"));
+    await driver.sleep(3000);
+
     await driver.findElement(By.id('quit-button')).click();
     await driver.sleep(2000);
 

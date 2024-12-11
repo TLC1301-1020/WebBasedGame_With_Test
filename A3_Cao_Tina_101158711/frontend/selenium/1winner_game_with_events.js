@@ -182,6 +182,8 @@ async function test () {
     //p2 draws plague
     await driver.findElement(By.id('event-button')).click();
     await driver.wait(until.elementTextIs(msgBox,"Your turn ended. Please return."));
+    await driver.sleep(2000);
+
     await driver.findElement(By.id('return-button')).click();
     await driver.sleep(2000);
 
@@ -196,7 +198,7 @@ async function test () {
     await driver.findElement(By.id('discard-button')).click();
     await driver.sleep(2000);
 
-    await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Your turn ended! Please return.")0);
+    await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Your turn ended! Please return."));
     await driver.findElement(By.id('return-button')).click();
     await driver.sleep(2000);
 
@@ -348,8 +350,8 @@ async function test () {
 
 
     currentPlayerName = await driver.findElement(By.id('player-name'));
-    await driver.wait(until.elementTextIs(currentPlayerName,"Player1")0);
-    await driver.wait(until.elementTextIs(msgBox,"Quest passed! Shields are updated. Sponsor trim hand by 3 cards!")0);
+    await driver.wait(until.elementTextIs(currentPlayerName,"Player1"));
+    await driver.wait(until.elementTextIs(msgBox,"Quest passed! Shields are updated. Sponsor trim hand by 3 cards!"));
     await driver.findElement(By.id('discard-input'),2000).sendKeys("F15 F15 F15");
     await driver.sleep(2000);
 
@@ -357,13 +359,15 @@ async function test () {
     await driver.sleep(2000);
 
 
-    await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Current player turn ended! Please return.")0);
+    await driver.wait(until.elementTextIs(msgBox,"Cards discarded. Current player turn ended! Please return."));
     await driver.findElement(By.id('return-button')).click();
 
     await driver.sleep(2000);
 
 
     await driver.wait(until.elementTextIs(msgBox,"Game ended! Winner of the game: Player3"));
+    await driver.sleep(2000);
+
     await driver.findElement(By.id('quit-button')).click();
 
     await driver.sleep(2000);
