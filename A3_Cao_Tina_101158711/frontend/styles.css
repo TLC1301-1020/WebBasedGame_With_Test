@@ -1,4 +1,4 @@
-/* General Body Setup */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -201,10 +201,10 @@ header {
 }
 
 .test {
-    background-color: black;
-    width: auto;
-    height: auto;
-    position: absolute;
-    border: none;
+    border-color:White;
+    background-color: White;
+    width: 0;
+    height: 0;
+    border: white;
     opacity: 0;
 }
